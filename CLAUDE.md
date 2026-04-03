@@ -2,7 +2,7 @@
 
 ## 🎯 Vue d'ensemble du projet
 
-- **Client** : Allan (Mrik / Emeric Charles-Euphrosi)
+- **Client** : Allan (Mrik / Emeric Charles-Euphrosine)
 - **Entreprise** : Vert'Tige 972
 - **Activité** : Arboriste grimpeur professionnel — Élagage, Abattage, Démontage, Broyage
 - **Localisation** : Sainte-Luce, Martinique (972)
