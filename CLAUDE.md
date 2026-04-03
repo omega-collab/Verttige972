@@ -401,6 +401,46 @@ Pool de 30 hashtags, rotation 15-20 par post.
 
 -----
 
+## 🔄 Self-Improving Agent
+
+> **Après chaque bloc de travail, évaluer si un apprentissage doit être consigné dans `.learnings/` (self-improving-agent).**
+
+### Quand logger ?
+
+| Situation | Fichier |
+|-----------|---------|
+| Commande/outil échoue | `.learnings/ERRORS.md` — commande, output, diagnostic, fix |
+| L'utilisateur me corrige / réponse fausse | `.learnings/LEARNINGS.md` — catégorie: correction |
+| Connaissance obsolète ou incomplète | `.learnings/LEARNINGS.md` — catégorie: knowledge_gap |
+| Meilleur pattern ou approche découverte | `.learnings/LEARNINGS.md` — catégorie: best_practice |
+| Fonctionnalité manquante / demande user | `.learnings/FEATURE_REQUESTS.md` |
+| API/outil externe en panne | `.learnings/ERRORS.md` — nom de l'intégration + détails |
+
+### Conventions d'ID
+
+- Learnings : `LRN-YYYYMMDD-XXX`
+- Errors : `ERR-YYYYMMDD-XXX`
+- Features : `FEAT-YYYYMMDD-XXX`
+
+### Promotion & hygiène
+
+1. Quand une entrée devient applicable globalement → la promouvoir dans CLAUDE.md et passer `Status: promoted`
+2. Lier les doublons avec `See Also`, incrémenter `Recurrence-Count`
+3. Avant un nouveau travail, scanner `.learnings/` filtré par `Area`
+4. Les entrées promues deviennent des règles de prévention courtes dans CLAUDE.md
+
+### Vérification rapide
+
+```bash
+# Entrées en attente
+grep -h "Status.*pending" .learnings/*.md | wc -l
+
+# Entrées prioritaires
+grep -B5 "Priority.*high\|Priority.*critical" .learnings/*.md
+```
+
+-----
+
 ## 🧠 Directives de Communication — Posture Claude
 
 Tu es mon mentor impitoyable et mon partenaire de réflexion. Ton rôle est de trouver la vérité et de me la dire franchement, quitte à bousculer les sentiments si nécessaire.
