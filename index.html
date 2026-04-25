@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vert'Tige 972 — Liens</title>
+<meta name="description" content="Vert'Tige 972 — Élagueur grimpeur professionnel en Martinique. WhatsApp, site web et Instagram.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#2C1A0E;
+  --bg-dark:#1A0F06;
+  --bg-mid:#1E1408;
+  --forest:#3B5323;
+  --moss:#5A7A2C;
+  --leaf:#8DB53D;
+  --chain:#E8A020;
+  --cream:#F4ECD8;
+  --sand:#D9C49A;
+}
+html,body{height:100%;overflow-x:hidden}
+body{
+  font-family:'Lato',sans-serif;
+  background:var(--bg);
+  color:var(--cream);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  position:relative;
+}
+
+/* Noise texture */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");
+}
+
+/* Tree rings */
+.rings{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:0;pointer-events:none}
+.ring{
+  position:absolute;top:50%;left:50%;
+  border-radius:50%;
+  border:1px solid rgba(141,181,61,0.04);
+  transform:translate(-50%,-50%);
+  animation:ring-pulse 8s ease-in-out infinite;
+}
+.ring:nth-child(1){width:200px;height:200px;animation-delay:0s}
+.ring:nth-child(2){width:340px;height:340px;animation-delay:1.2s}
+.ring:nth-child(3){width:480px;height:480px;animation-delay:2.4s}
+.ring:nth-child(4){width:620px;height:620px;animation-delay:3.6s}
+.ring:nth-child(5){width:760px;height:760px;animation-delay:4.8s}
+@keyframes ring-pulse{
+  0%,100%{border-color:rgba(141,181,61,0.03);transform:translate(-50%,-50%) scale(1)}
+  50%{border-color:rgba(141,181,61,0.08);transform:translate(-50%,-50%) scale(1.02)}
+}
+
+/* Decorative leaves */
+.deco-leaf{position:fixed;pointer-events:none;opacity:.06;z-index:0}
+.deco-leaf:nth-child(1){top:8%;left:6%;font-size:4.5rem;filter:blur(1px);transform:rotate(-25deg)}
+.deco-leaf:nth-child(2){top:75%;right:8%;font-size:3.2rem;filter:blur(1.5px);transform:rotate(40deg)}
+.deco-leaf:nth-child(3){bottom:12%;left:10%;font-size:5.5rem;filter:blur(2px);transform:rotate(15deg)}
+.deco-leaf:nth-child(4){top:20%;right:12%;font-size:3.8rem;filter:blur(1px);transform:rotate(-55deg)}
+
+/* Card */
+.card{
+  position:relative;z-index:1;
+  width:340px;max-width:calc(100vw - 40px);
+  background:linear-gradient(160deg,var(--bg-dark) 0%,var(--bg) 50%,var(--bg-mid) 100%);
+  border:1px solid rgba(141,181,61,0.2);
+  border-radius:4px;
+  padding:36px 28px 32px;
+  box-shadow:0 0 60px rgba(0,0,0,0.6);
+  animation:card-in .8s cubic-bezier(0.16,1,0.3,1) forwards;
+  opacity:0;
+}
+@keyframes card-in{
+  from{opacity:0;transform:translateY(30px) scale(0.96)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+/* Accent bar top */
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--forest),var(--chain),var(--leaf));
+  border-radius:4px 4px 0 0;
+}
+
+/* Icon */
+.icon-wrap{
+  width:72px;height:72px;margin:0 auto 20px;
+  border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,var(--leaf),var(--forest));
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;
+  box-shadow:0 4px 20px rgba(141,181,61,0.2);
+  animation:fade-up .6s cubic-bezier(0.16,1,0.3,1) forwards;
+  animation-delay:.2s;opacity:0;
+}
+
+/* Header */
+.card-name{
+  font-family:'Oswald',sans-serif;font-weight:700;
+  font-size:26px;letter-spacing:4px;text-align:center;
+  color:var(--cream);
+  animation:fade-up .6s cubic-bezier(0.16,1,0.3,1) forwards;
+  animation-delay:.3s;opacity:0;
+}
+.card-sub{
+  font-family:'Lato',sans-serif;font-weight:300;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  text-align:center;color:var(--leaf);margin-top:6px;
+  animation:fade-up .6s cubic-bezier(0.16,1,0.3,1) forwards;
+  animation-delay:.4s;opacity:0;
+}
+
+/* Separator */
+.sep{
+  display:flex;align-items:center;gap:12px;
+  margin:22px 0 24px;
+  animation:fade-up .6s cubic-bezier(0.16,1,0.3,1) forwards;
+  animation-delay:.52s;opacity:0;
+}
+.sep-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(141,181,61,0.25),transparent)}
+.sep-dot{font-size:8px;color:var(--chain);opacity:.6}
+
+/* Buttons */
+.links{display:flex;flex-direction:column;gap:12px;
+  animation:fade-up .6s cubic-bezier(0.16,1,0.3,1) forwards;
+  animation-delay:.64s;opacity:0;
+}
+.link-btn{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;border-radius:3px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(141,181,61,0.12);
+  text-decoration:none;color:var(--cream);
+  position:relative;overflow:hidden;
+  transition:transform .25s,background .25s,border-color .25s;
+}
+.link-btn::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--leaf);transform:scaleY(0);
+  transition:transform .25s;transform-origin:center;
+}
+.link-btn:hover{
+  transform:translateX(4px);
+  background:rgba(90,122,44,0.1);
+  border-color:rgba(141,181,61,0.3);
+}
+.link-btn:hover::before{transform:scaleY(1)}
+.link-btn:hover .link-arrow{opacity:1;transform:translateX(0)}
+
+/* Icon circle */
+.link-icon{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.link-icon svg{width:18px;height:18px;fill:#fff}
+.link-icon.wa{background:radial-gradient(circle at 35% 30%,#1FAF38,#128C7E)}
+.link-icon.web{background:radial-gradient(circle at 35% 30%,var(--leaf),var(--moss))}
+.link-icon.ig{background:radial-gradient(circle at 35% 30%,#F58529,#DD2A7B,#8134AF)}
+
+/* Text */
+.link-text{flex:1;display:flex;flex-direction:column;gap:2px}
+.link-title{
+  font-family:'Oswald',sans-serif;font-weight:600;
+  font-size:13px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--cream);
+}
+.link-desc{font-size:10px;color:var(--sand);opacity:.7}
+
+/* Arrow */
+.link-arrow{
+  font-size:14px;color:var(--leaf);
+  opacity:0;transform:translateX(-8px);
+  transition:opacity .25s,transform .25s;
+}
+
+/* Footer */
+.card-footer{
+  text-align:center;margin-top:28px;
+  font-family:'Lato',sans-serif;font-size:9px;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--cream);opacity:.3;
+  animation:fade-up .6s cubic-bezier(0.16,1,0.3,1) forwards;
+  animation-delay:.8s;opacity:0;
+}
+
+@keyframes fade-up{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Fix footer opacity after animation */
+.card-footer{animation-fill-mode:forwards}
+</style>
+</head>
+<body>
+
+<!-- Tree rings -->
+<div class="rings">
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+</div>
+
+<!-- Decorative leaves -->
+<span class="deco-leaf">🌿</span>
+<span class="deco-leaf">🍃</span>
+<span class="deco-leaf">🌿</span>
+<span class="deco-leaf">🍃</span>
+
+<!-- Card -->
+<div class="card">
+  <div class="icon-wrap">🌳</div>
+  <div class="card-name">VERT'TIGE</div>
+  <div class="card-sub">Élagage · Abattage · Martinique</div>
+
+  <div class="sep">
+    <span class="sep-line"></span>
+    <span class="sep-dot">✦</span>
+    <span class="sep-line"></span>
+  </div>
+
+  <div class="links">
+    <!-- WhatsApp -->
+    <a href="https://wa.me/596696671344" target="_blank" rel="noopener" class="link-btn">
+      <div class="link-icon wa">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </div>
+      <div class="link-text">
+        <span class="link-title">WhatsApp</span>
+        <span class="link-desc">Devis gratuit & rapide</span>
+      </div>
+      <span class="link-arrow">→</span>
+    </a>
+
+    <!-- Site web -->
+    <a href="https://elagageabattagemartinique.com" target="_blank" rel="noopener" class="link-btn">
+      <div class="link-icon web">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      </div>
+      <div class="link-text">
+        <span class="link-title">Site Web</span>
+        <span class="link-desc">elagageabattagemartinique.com</span>
+      </div>
+      <span class="link-arrow">→</span>
+    </a>
+
+    <!-- Instagram -->
+    <a href="https://www.instagram.com/vert_tige972?igsh=MTBtdDBnYjMweTg2bg==" target="_blank" rel="noopener" class="link-btn">
+      <div class="link-icon ig">
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      </div>
+      <div class="link-text">
+        <span class="link-title">Instagram</span>
+        <span class="link-desc">@vert_tige972</span>
+      </div>
+      <span class="link-arrow">→</span>
+    </a>
+  </div>
+
+  <div class="card-footer">Vert'Tige 972 · Martinique</div>
+</div>
+
+</body>
+</html>
