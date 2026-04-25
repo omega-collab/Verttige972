@@ -401,6 +401,21 @@ Pool de 30 hashtags, rotation 15-20 par post.
 
 -----
 
+## 🛠️ Skills Disponibles
+
+> Claude Code charge ces skills automatiquement selon le contexte de la demande.
+
+| Skill | Fichier | Déclencheur |
+|-------|---------|-------------|
+| **security** | `skills/security.md` | Audit sécurité, scan vulnérabilités, OWASP, headers, pentest |
+| **frontend-design** | `skills/frontend-design.md` | Design UI/UX, composants, landing pages, animations, responsive |
+| **know-me** | `skills/know-me.md` | Chargé à chaque session — profil Allan, préférences, mémoire persistante |
+| **self-improving-agent** | `.learnings/` + directives ci-dessous | Logging erreurs, corrections, bonnes pratiques |
+
+**Règle** : Avant chaque tâche frontend, consulter `skills/frontend-design.md`. Avant chaque audit sécu, consulter `skills/security.md`. À chaque début de session, charger `skills/know-me.md` silencieusement.
+
+-----
+
 ## 🔄 Self-Improving Agent
 
 > **Après chaque bloc de travail, évaluer si un apprentissage doit être consigné dans `.learnings/` (self-improving-agent).**
