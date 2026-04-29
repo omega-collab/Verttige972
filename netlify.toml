@@ -1,0 +1,7 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/liens"
+  to = "/liens/index.html"
+  status = 200
