@@ -5,3 +5,8 @@
   from = "/liens"
   to = "/liens/index.html"
   status = 200
+
+[[redirects]]
+  from = "/liens/"
+  to = "/liens/index.html"
+  status = 200
