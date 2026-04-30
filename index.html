@@ -1552,78 +1552,6 @@
 
 
 
-  <!-- ══ AVANT / APRÈS ══ -->
-  <section id="avantapres">
-    <div class="aa-intro reveal">
-      <p class="section-tag">Résultats concrets</p>
-      <h2 class="section-h2">AVANT / <em>APRÈS</em></h2>
-      <p style="font-size:1rem;line-height:1.8;color:var(--sable);font-weight:300;max-width:480px;margin-top:0">Nos interventions parlent d'elles-mêmes. Faites glisser le curseur pour comparer avant et après chaque chantier.</p>
-    </div>
-    <div class="aa-grid reveal rv2">
-
-      <div class="aa-card">
-        <div class="aa-card-label">Élagage</div>
-        <div class="aa-compare">
-          <div class="aa-ph aa-after">
-            <div class="ph-icon">🌿</div>
-            <div class="ph-lbl">Photo APRÈS — à venir</div>
-          </div>
-          <div class="aa-ph aa-before">
-            <div class="ph-icon">🌳</div>
-            <div class="ph-lbl">Photo AVANT — à venir</div>
-          </div>
-          <div class="aa-handle-circle">
-            <div class="aa-arrows"><span>◀</span><span>▶</span></div>
-          </div>
-          <div class="aa-handle"></div>
-          <span class="aa-tag-before">AVANT</span>
-          <span class="aa-tag-after">APRÈS</span>
-        </div>
-      </div>
-
-      <div class="aa-card">
-        <div class="aa-card-label">Abattage</div>
-        <div class="aa-compare">
-          <div class="aa-ph aa-after">
-            <div class="ph-icon">✅</div>
-            <div class="ph-lbl">Photo APRÈS — à venir</div>
-          </div>
-          <div class="aa-ph aa-before">
-            <div class="ph-icon">🌲</div>
-            <div class="ph-lbl">Photo AVANT — à venir</div>
-          </div>
-          <div class="aa-handle-circle">
-            <div class="aa-arrows"><span>◀</span><span>▶</span></div>
-          </div>
-          <div class="aa-handle"></div>
-          <span class="aa-tag-before">AVANT</span>
-          <span class="aa-tag-after">APRÈS</span>
-        </div>
-      </div>
-
-      <div class="aa-card">
-        <div class="aa-card-label">Démontage</div>
-        <div class="aa-compare">
-          <div class="aa-ph aa-after">
-            <div class="ph-icon">🪓</div>
-            <div class="ph-lbl">Photo APRÈS — à venir</div>
-          </div>
-          <div class="aa-ph aa-before">
-            <div class="ph-icon">🌴</div>
-            <div class="ph-lbl">Photo AVANT — à venir</div>
-          </div>
-          <div class="aa-handle-circle">
-            <div class="aa-arrows"><span>◀</span><span>▶</span></div>
-          </div>
-          <div class="aa-handle"></div>
-          <span class="aa-tag-before">AVANT</span>
-          <span class="aa-tag-after">APRÈS</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
   <!-- CONFIANCE -->
   <section id="confiance">
     <div class="trust-card reveal"><span class="trust-icon">🏆</span><div class="trust-num">100+</div><div class="trust-label">Interventions réalisées</div></div>
@@ -2723,29 +2651,6 @@
         el.classList.add('visible');
       });
     }, 800);
-
-    // ══ AVANT / APRÈS — comparateur drag ══
-    (function() {
-      document.querySelectorAll('.aa-compare').forEach(function(cmp) {
-        var before = cmp.querySelector('.aa-before');
-        var handle = cmp.querySelector('.aa-handle');
-        var circle = cmp.querySelector('.aa-handle-circle');
-        var dragging = false;
-        function setPos(clientX) {
-          var r = cmp.getBoundingClientRect();
-          var pct = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
-          before.style.clipPath = 'inset(0 ' + (100 - pct).toFixed(1) + '% 0 0)';
-          handle.style.left = pct + '%';
-          circle.style.left = pct + '%';
-        }
-        cmp.addEventListener('mousedown', function(e) { dragging = true; setPos(e.clientX); e.preventDefault(); });
-        window.addEventListener('mousemove', function(e) { if (dragging) setPos(e.clientX); });
-        window.addEventListener('mouseup', function() { dragging = false; });
-        cmp.addEventListener('touchstart', function(e) { dragging = true; setPos(e.touches[0].clientX); }, { passive: true });
-        window.addEventListener('touchmove', function(e) { if (dragging) setPos(e.touches[0].clientX); }, { passive: true });
-        window.addEventListener('touchend', function() { dragging = false; });
-      });
-    })();
 
   </script>
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
