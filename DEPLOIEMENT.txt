@@ -1,0 +1,75 @@
+====================================================
+VERT'TIGE 972 — GUIDE DE DÉPLOIEMENT
+Domaine : www.elagageabattagemartinique.com
+====================================================
+
+STRUCTURE DES FICHIERS À UPLOADER :
+────────────────────────────────────
+/
+├── index.html              ← fichier principal du site
+└── images/
+    ├── DSC09516.jpeg
+    ├── _TCA0115.jpeg
+    ├── _TCA0118.jpeg
+    ├── _TCA0149.jpeg
+    ├── _TCA0166.jpeg
+    ├── _TCA0170.jpeg
+    ├── _TCA0219.jpeg
+    ├── _TCA0222.jpeg
+    ├── _TCA0226.jpeg
+    ├── _TCA0233.jpeg
+    ├── _TCA0240.jpeg
+    ├── 642C4069-...jpeg
+    ├── F586D5D6-...jpeg
+    ├── IMG_2520.jpeg
+    ├── IMG_2625.jpeg
+    ├── IMG_2898.jpeg
+    ├── IMG_2995.jpeg
+    ├── IMG_3659.jpeg
+    ├── IMG_3662.jpeg
+    ├── IMG_3668.jpeg
+    ├── IMG_3675.jpeg
+    ├── IMG_3682.jpeg
+    ├── IMG_5025.jpeg
+    ├── IMG_6132.jpeg
+    ├── IMG_6214.jpeg
+    ├── IMG_8465.jpeg
+    ├── IMG_8623.jpeg
+    ├── IMG_8651.jpeg
+    ├── IMG_8662.jpeg
+    └── IMG_8663.jpeg
+
+====================================================
+OPTION 1 — NETLIFY (RECOMMANDÉ, GRATUIT)
+====================================================
+1. Crée un compte sur netlify.com
+2. Clique "Add new site" → "Deploy manually"
+3. Crée un dossier "verttige972" sur ton ordinateur
+4. Mets index.html + le dossier images/ dedans
+5. Glisse-dépose ce dossier sur Netlify
+6. Le site est en ligne en 30 secondes sur une URL Netlify
+
+CONNECTER TON DOMAINE SUR NETLIFY :
+- Site settings → Domain management → Add custom domain
+- Tape : elagageabattagemartinique.com
+- Netlify te donne 2 DNS à configurer chez ton registrar
+
+====================================================
+OPTION 2 — HÉBERGEMENT OVH / IONOS
+====================================================
+1. Connecte-toi à ton espace client OVH/Ionos
+2. Va dans "Hébergement" → "FTP" ou "Gestionnaire de fichiers"
+3. Upload index.html à la racine (public_html/ ou www/)
+4. Upload le dossier images/ au même endroit
+5. Ton domaine pointe automatiquement
+
+====================================================
+DNS — CONNEXION DOMAINE VERS NETLIFY
+====================================================
+Chez ton registrar (GoDaddy, OVH, Namecheap…) :
+Ajoute ces enregistrements DNS :
+
+Type A     | @   | 75.2.60.5
+Type CNAME | www | [ton-site].netlify.app
+
+====================================================
