@@ -2393,6 +2393,229 @@
       }
     }
 
+    /* ══════════════════════════════════════════════════════
+       MOBILE v1 — Adaptation smartphone complète
+       Toutes les règles ci-dessous n'affectent QUE le mobile
+    ══════════════════════════════════════════════════════ */
+
+    /* ─── HERO : réafficher la photo en fond plein écran ─── */
+    @media (max-width: 768px) {
+      #hero {
+        padding: 88px 20px 60px !important;
+        min-height: 100svh !important;
+      }
+      /* Réafficher le slot photo caché à 960px */
+      .hero-img-slot {
+        display: block !important;
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 0 !important;
+        opacity: 1 !important;
+      }
+      /* Cadrage portrait : on centre légèrement en haut pour voir le sujet */
+      .hero-img-slot img {
+        object-position: center 18% !important;
+      }
+      /* Dégradé vertical fort : texte lisible sur la photo */
+      .hero-img-slot::after {
+        background: linear-gradient(
+          to bottom,
+          rgba(11,20,16,0.25) 0%,
+          rgba(11,20,16,0.60) 40%,
+          rgba(11,20,16,0.97) 85%
+        ) !important;
+      }
+      /* Titre légèrement réduit sur petit écran */
+      .hero-h1 {
+        font-size: clamp(2.8rem, 10.5vw, 4.2rem) !important;
+      }
+      .hero-sub {
+        font-size: .92rem !important;
+        max-width: 100% !important;
+        margin-top: 16px !important;
+      }
+      .hero-badge {
+        margin-bottom: 18px !important;
+      }
+      /* Boutons CTA : colonne pleine largeur */
+      .hero-actions {
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin-top: 28px !important;
+      }
+      .btn-primary,
+      .btn-outline {
+        width: 100% !important;
+        text-align: center !important;
+        padding: 16px 20px !important;
+        display: block !important;
+      }
+      /* Barre téléphone sous les CTA */
+      .hero-tel-bar {
+        margin-top: 32px !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+      }
+    }
+
+    /* ─── SERVICES : ajustements tactile ─── */
+    @media (max-width: 768px) {
+      #services {
+        padding: 64px 20px !important;
+      }
+      .svc-tab {
+        padding: 14px 18px !important;
+        font-size: .68rem !important;
+        letter-spacing: .12em !important;
+      }
+      .svc-title {
+        font-size: 2rem !important;
+      }
+      .svc-num {
+        font-size: 3.5rem !important;
+      }
+      .svc-info {
+        padding: 28px 0 !important;
+      }
+      .svc-visual {
+        min-height: 210px !important;
+      }
+      .svc-visual img {
+        object-position: center center !important;
+      }
+      .svc-cta {
+        font-size: .7rem !important;
+      }
+    }
+
+    /* ─── À PROPOS : photo trop haute en portrait ─── */
+    @media (max-width: 768px) {
+      #apropos {
+        padding: 64px 20px !important;
+      }
+      .apropos-wrap {
+        gap: 40px !important;
+      }
+      .apropos-visual {
+        max-width: 100% !important;
+      }
+      /* Passer en ratio paysage pour éviter une photo trop haute */
+      .apropos-img,
+      .apropos-img-ph {
+        aspect-ratio: 4/3 !important;
+        max-height: 260px !important;
+        object-position: center 10% !important;
+      }
+      /* Cacher les décors angulaires qui débordent en mobile */
+      .apropos-corner,
+      .apropos-corner-bl {
+        display: none !important;
+      }
+      /* Badge repositionné pour ne pas déborder */
+      .apropos-badge {
+        bottom: 0 !important;
+        left: 12px !important;
+        padding: 10px 16px !important;
+      }
+      .apropos-badge-num {
+        font-size: 1.5rem !important;
+      }
+      /* Réseaux sociaux : scroll horizontal sur petit écran */
+      .apropos-socials {
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        padding-bottom: 4px !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .apropos-socials::-webkit-scrollbar { display: none !important; }
+    }
+
+    /* ─── GALERIE ─── */
+    @media (max-width: 768px) {
+      #galerie {
+        padding: 64px 20px !important;
+      }
+    }
+
+    /* ─── AVANT/APRÈS ─── */
+    @media (max-width: 768px) {
+      #avantapres {
+        padding: 64px 16px !important;
+      }
+    }
+
+    /* ─── CONFIANCE : 2 cols sur mobile, 1 col très petit ─── */
+    @media (max-width: 480px) {
+      #confiance {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* ─── TÉMOIGNAGES ─── */
+    @media (max-width: 768px) {
+      #temoignages {
+        padding: 64px 20px !important;
+      }
+      .comment-box {
+        padding: 24px 16px !important;
+      }
+      .cf-row {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
+    /* ─── FAQ ─── */
+    @media (max-width: 768px) {
+      #faq {
+        padding: 64px 20px !important;
+      }
+    }
+
+    /* ─── CONTACT / FORMULAIRE ─── */
+    @media (max-width: 768px) {
+      #contact {
+        padding: 64px 20px !important;
+      }
+      /* FIX iOS critique : inputs < 16px déclenchent un zoom auto sur Safari */
+      .f-in,
+      .f-sel,
+      .f-ta {
+        font-size: 1rem !important;        /* 16px = seuil iOS anti-zoom */
+        -webkit-appearance: none !important;
+        border-radius: 0 !important;
+      }
+      .btn-wa {
+        width: 100% !important;
+        padding: 18px !important;
+        font-size: .76rem !important;
+        justify-content: center !important;
+      }
+    }
+
+    /* ─── SECTION TITRES : plus compact sur 540px ─── */
+    @media (max-width: 540px) {
+      .section-h2 {
+        font-size: clamp(1.9rem, 8.5vw, 2.8rem) !important;
+        margin-bottom: 32px !important;
+      }
+    }
+
+    /* ─── FABs : au-dessus de la sticky bar mobile ─── */
+    @media (max-width: 768px) {
+      .fab-group {
+        bottom: 88px !important;
+        right: 16px !important;
+      }
+      .fab {
+        width: 46px !important;
+        height: 46px !important;
+      }
+    }
+
+    /* ─── MENU MOBILE : ordre ─── */
+    .mobile-menu a { touch-action: manipulation !important; }
+
   </style>
 </head>
 <body>
@@ -2426,9 +2649,9 @@
     </a>
     <ul class="nav-links">
       <li><a href="#services">Services</a></li>
+      <li><a href="#apropos">À propos</a></li>
       <li><a href="#galerie">Galerie</a></li>
       <li><a href="#avantapres">Avant/Après</a></li>
-      <li><a href="#apropos">À propos</a></li>
       <li><a href="#temoignages">Avis</a></li>
       <li><a href="#videos">Vidéos</a></li>
       <li><a href="#faq">FAQ</a></li>
