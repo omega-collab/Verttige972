@@ -2143,167 +2143,224 @@
     }
 
     /* ══════════════════════════════════════════════════════
-       REDESIGN v6 — GALERIE ÉDITORIALE
-       Refonte masonry asymétrique + hover premium + filtres tabs
+       REDESIGN v7 — GALERIE "FOLIO"
+       Grid dramatique 4 cols + numéros + group-hover dimming
     ══════════════════════════════════════════════════════ */
 
-    /* ── Grid asymétrique : 4 cols, premier item featured 2x2 ── */
+    /* ── Reset galerie section ── */
+    #galerie { background: var(--noir) !important; }
+
+    /* ── Grid : 4 colonnes, hauteur 250px, flow dense ── */
     .gallery-compact {
+      display: grid !important;
       grid-template-columns: repeat(4, 1fr) !important;
-      grid-auto-rows: 200px !important;
+      grid-auto-rows: 250px !important;
       grid-auto-flow: dense !important;
-      gap: 6px !important;
+      gap: 3px !important;
+      background: rgba(11,20,16,0.8) !important;
     }
-    .gallery-compact > .gc-item:first-child {
+
+    /* ── Asymétrie dramatique ── */
+    /* Item 1 : hero 3 colonnes × 2 rangées */
+    .gallery-compact > .gc-item:nth-child(1) {
+      grid-column: span 3 !important;
+      grid-row: span 2 !important;
+    }
+    /* Item 4 : portrait tall (1 col × 2 rangées) */
+    .gallery-compact > .gc-item:nth-child(4) {
+      grid-row: span 2 !important;
+    }
+    /* Items larges (paysage) */
+    .gallery-compact > .gc-item:nth-child(6),
+    .gallery-compact > .gc-item:nth-child(9),
+    .gallery-compact > .gc-item:nth-child(14) {
       grid-column: span 2 !important;
+    }
+    /* Items portraits seconds */
+    .gallery-compact > .gc-item:nth-child(11),
+    .gallery-compact > .gc-item:nth-child(17) {
       grid-row: span 2 !important;
     }
-    /* Items tall pour casser la monotonie */
-    .gallery-compact > .gc-item:nth-child(8),
-    .gallery-compact > .gc-item:nth-child(13) {
-      grid-row: span 2 !important;
-    }
-    /* Reset aspect-ratio (grid gère les dimensions) */
+
+    /* ── Chaque item ── */
     .gc-item {
       aspect-ratio: unset !important;
       position: relative !important;
       overflow: hidden !important;
       cursor: pointer !important;
+      background: var(--jungle) !important;
     }
+
+    /* ── Image : transition douce ── */
     .gc-item img {
       width: 100% !important;
       height: 100% !important;
       object-fit: cover !important;
+      display: block !important;
       transition:
-        transform .8s var(--ease-expo),
-        filter .4s var(--ease-expo) !important;
-    }
-    .gc-item:hover img {
-      transform: scale(1.04) !important;
-      filter: brightness(.55) !important;
+        transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+        filter .6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      will-change: transform, filter !important;
     }
 
-    /* ── Hover : overlay slide-up depuis le bas ── */
+    /* ── Numéro folio (data-n injecté par JS) ── */
+    .gc-item[data-n]::before {
+      content: attr(data-n) !important;
+      position: absolute !important;
+      bottom: 8px !important;
+      right: 12px !important;
+      font-family: 'Bebas Neue', sans-serif !important;
+      font-size: 5rem !important;
+      line-height: 1 !important;
+      color: rgba(248,246,242,0.055) !important;
+      pointer-events: none !important;
+      z-index: 2 !important;
+      transition: opacity .5s ease !important;
+      letter-spacing: .02em !important;
+    }
+
+    /* ── Group hover : les non-survolés s'assombrissent ── */
+    .gallery-compact:has(.gc-item:hover) .gc-item:not(:hover) img {
+      filter: brightness(.22) !important;
+      transform: scale(1.0) !important;
+    }
+    .gallery-compact:has(.gc-item:hover) .gc-item:hover img {
+      transform: scale(1.07) !important;
+      filter: brightness(1.08) saturate(1.1) !important;
+    }
+    /* Numéro disparaît sur l'item survolé */
+    .gallery-compact:has(.gc-item:hover) .gc-item:hover[data-n]::before {
+      opacity: 0 !important;
+    }
+
+    /* ── Overlay gradient bas ── */
     .gc-overlay {
       position: absolute !important;
       inset: 0 !important;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.78) 0%,
+        rgba(0,0,0,0.28) 30%,
+        transparent 60%
+      ) !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: flex-end !important;
       align-items: flex-start !important;
-      padding: 18px !important;
-      background: none !important;
+      padding: 22px 24px !important;
       opacity: 0 !important;
-      transform: translateY(16px) !important;
+      transform: translateY(8px) !important;
       transition:
-        opacity .35s var(--ease-expo),
-        transform .35s var(--ease-expo) !important;
-      z-index: 2;
+        opacity .4s cubic-bezier(0.16, 1, 0.3, 1),
+        transform .4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      z-index: 3 !important;
     }
     .gc-item:hover .gc-overlay {
       opacity: 1 !important;
       transform: translateY(0) !important;
     }
+
+    /* ── Tag catégorie ── */
     .gc-tag {
+      font-family: 'Bebas Neue', sans-serif !important;
+      font-size: .95rem !important;
+      letter-spacing: .18em !important;
+      text-transform: uppercase !important;
+      color: var(--noir) !important;
       background: var(--orange) !important;
-      color: #fff !important;
+      padding: 4px 14px 3px !important;
       border: none !important;
-      padding: 7px 14px !important;
-      font-size: .58rem !important;
-      letter-spacing: .22em !important;
-    }
-    /* Barre orange bas — scaleX hover */
-    .gc-item::after {
-      content: '' !important;
-      position: absolute !important;
-      bottom: 0 !important; left: 0 !important;
-      width: 100% !important; height: 3px !important;
-      background: var(--orange) !important;
-      transform: scaleX(0) !important;
-      transform-origin: left !important;
-      transition: transform .45s var(--ease-expo) !important;
-      pointer-events: none !important;
-      z-index: 3 !important;
-    }
-    .gc-item:hover::after {
-      transform: scaleX(1) !important;
+      border-radius: 0 !important;
+      line-height: 1.5 !important;
     }
 
-    /* ── Filtres : onglets underline éditoriaux ── */
+    /* Supprimer l'ancienne barre ::after (v6) */
+    .gc-item::after {
+      content: none !important;
+    }
+
+    /* ── Filtres : Bebas Neue oversized, style magazine ── */
     .filter-row {
       display: flex !important;
       gap: 0 !important;
-      border-bottom: 1px solid rgba(237,232,223,.08) !important;
+      border-bottom: 1px solid rgba(237,232,223,.07) !important;
       padding-bottom: 0 !important;
-      margin-bottom: 40px !important;
+      margin-bottom: 48px !important;
       flex-wrap: wrap !important;
       background: none !important;
     }
     .f-btn {
       background: none !important;
       border: none !important;
-      border-bottom: 2px solid transparent !important;
-      padding: 16px 26px !important;
-      font-family: 'Syne', sans-serif !important;
-      font-size: .68rem !important;
-      font-weight: 700 !important;
-      letter-spacing: .2em !important;
-      text-transform: uppercase !important;
-      color: rgba(237,232,223,.4) !important;
-      cursor: pointer !important;
-      transition:
-        color .25s var(--ease-expo),
-        border-color .25s var(--ease-expo) !important;
+      border-bottom: 3px solid transparent !important;
       position: relative !important;
       top: 1px !important;
+      padding: 20px 36px !important;
+      font-family: 'Bebas Neue', sans-serif !important;
+      font-size: 1.55rem !important;
+      letter-spacing: .1em !important;
+      text-transform: uppercase !important;
+      color: rgba(237,232,223,.22) !important;
+      cursor: pointer !important;
+      transition:
+        color .3s ease,
+        border-color .3s ease !important;
+      line-height: 1 !important;
     }
     .f-btn:hover:not(.active) {
-      color: var(--creme) !important;
-      border-bottom-color: rgba(243,122,31,.4) !important;
+      color: rgba(237,232,223,.6) !important;
       background: none !important;
     }
     .f-btn.active {
-      color: var(--orange) !important;
-      background: none !important;
+      color: var(--creme) !important;
       border-bottom-color: var(--orange) !important;
+      background: none !important;
     }
 
-    /* ── Bouton "Voir plus" : line-style centré ── */
+    /* ── Bouton "Voir plus" ── */
     .gallery-more-btn {
       font-family: 'Syne', sans-serif !important;
-      font-size: .72rem !important;
+      font-size: .7rem !important;
       letter-spacing: .2em !important;
-      padding: 18px 36px !important;
-      border: 1px solid rgba(243,122,31,.3) !important;
-      color: var(--orange) !important;
+      text-transform: uppercase !important;
+      padding: 16px 44px !important;
       background: none !important;
-      margin-top: 32px !important;
+      border: 1px solid rgba(243,122,31,.25) !important;
+      color: var(--orange) !important;
+      margin-top: 28px !important;
       width: auto !important;
       display: inline-flex !important;
-      margin-left: auto !important;
-      margin-right: auto !important;
-      transition:
-        background .25s var(--ease-expo),
-        border-color .25s var(--ease-expo) !important;
+      align-items: center !important;
+      gap: 10px !important;
+      transition: background .25s ease, border-color .25s ease !important;
     }
     .gallery-more-btn:hover {
-      background: rgba(243,122,31,.08) !important;
+      background: rgba(243,122,31,.07) !important;
       border-color: var(--orange) !important;
     }
 
-    /* ── Mobile : 2 cols, reset asymétrie ── */
-    @media(max-width:960px) {
+    /* ── Mobile : 2 cols, reset asymétries ── */
+    @media (max-width: 960px) {
       .gallery-compact {
         grid-template-columns: repeat(2, 1fr) !important;
-        grid-auto-rows: 180px !important;
+        grid-auto-rows: 190px !important;
       }
-      .gallery-compact > .gc-item:first-child {
+      .gallery-compact > .gc-item:nth-child(1) {
         grid-column: span 2 !important;
         grid-row: span 1 !important;
       }
-      .gallery-compact > .gc-item:nth-child(8),
-      .gallery-compact > .gc-item:nth-child(13) {
+      .gallery-compact > .gc-item:nth-child(4),
+      .gallery-compact > .gc-item:nth-child(11),
+      .gallery-compact > .gc-item:nth-child(17) {
         grid-row: auto !important;
+      }
+      .gallery-compact > .gc-item:nth-child(6),
+      .gallery-compact > .gc-item:nth-child(9),
+      .gallery-compact > .gc-item:nth-child(14) {
+        grid-column: auto !important;
+      }
+      .gc-item[data-n]::before {
+        font-size: 3.5rem !important;
       }
       .filter-row {
         overflow-x: auto !important;
@@ -2314,17 +2371,25 @@
       .filter-row::-webkit-scrollbar { display: none !important; }
       .f-btn {
         flex-shrink: 0 !important;
-        padding: 14px 18px !important;
-        font-size: .62rem !important;
+        padding: 16px 22px !important;
+        font-size: 1.2rem !important;
       }
     }
-    @media(max-width:540px) {
+    @media (max-width: 540px) {
       .gallery-compact {
         grid-template-columns: 1fr !important;
-        grid-auto-rows: 240px !important;
+        grid-auto-rows: 260px !important;
       }
-      .gallery-compact > .gc-item:first-child {
+      .gallery-compact > .gc-item:nth-child(1) {
         grid-column: auto !important;
+      }
+      .gc-item[data-n]::before {
+        font-size: 3rem !important;
+        opacity: 0.04 !important;
+      }
+      .f-btn {
+        font-size: 1.1rem !important;
+        padding: 14px 18px !important;
       }
     }
 
@@ -3031,11 +3096,43 @@
   </div>
 
   <script>
-    // FIX BUG REDIRECT GALERIE — forcer scroll en haut au chargement
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-    window.scrollTo(0, 0);
+    // FIX SCROLL TOP — force le haut de page dans tous les scénarios
+    (function() {
+      // Désactiver smooth-scroll pendant le chargement pour éviter l'animation vers un hash
+      document.documentElement.style.scrollBehavior = 'auto';
+      document.body && (document.body.style.scrollBehavior = 'auto');
+      // Supprimer tout hash dans l'URL (évite le scroll auto vers #contact etc.)
+      if (window.location.hash) {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+      // Désactiver la restauration de scroll du navigateur
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      // Immédiat
+      document.documentElement.scrollTop = 0;
+      // Après parsing DOM
+      document.addEventListener('DOMContentLoaded', function() {
+        document.documentElement.scrollTop = 0;
+      });
+      // Après chargement complet (images, fonts)
+      window.addEventListener('load', function() {
+        document.documentElement.scrollTop = 0;
+        requestAnimationFrame(function() {
+          document.documentElement.scrollTop = 0;
+          // Réactiver smooth-scroll après être sûr qu'on est en haut
+          setTimeout(function() {
+            document.documentElement.style.scrollBehavior = '';
+          }, 200);
+        });
+      });
+      // Restauration bfcache (bouton retour navigateur)
+      window.addEventListener('pageshow', function(e) {
+        if (e.persisted) {
+          document.documentElement.scrollTop = 0;
+        }
+      });
+    })();
 
     // NAV
     const nav = document.getElementById('nav');
@@ -3160,6 +3257,11 @@
         btn.classList.add('active');
         applyGalleryFilter(btn.dataset.f);
       });
+    });
+
+    // Injection numéros folio sur chaque item de la galerie
+    document.querySelectorAll('#galleryGrid .gc-item').forEach(function(el, i) {
+      el.dataset.n = String(i + 1).padStart(2, '0');
     });
 
     // Init au chargement
