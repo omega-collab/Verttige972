@@ -1415,6 +1415,219 @@
       .trust-num { font-size: clamp(2.8rem, 10vw, 4rem) !important; }
     }
 
+    /* ══════════════════════════════════════════════════════
+       REDESIGN v3 — SECTION PAR SECTION
+    ══════════════════════════════════════════════════════ */
+
+    /* ── HERO ── */
+    .hero-h1 {
+      font-size: clamp(4.8rem, 9vw, 10rem) !important;
+      line-height: .88 !important;
+    }
+
+    /* Proof badges row */
+    .hero-proofs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .hero-proof-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      border: 1px solid rgba(168,217,108,.22);
+      font-family: 'Syne', sans-serif;
+      font-size: .58rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(237,232,223,.65);
+      background: rgba(168,217,108,.04);
+    }
+    .hero-proof-badge .hpb-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
+    }
+
+    /* Tel bar — accent orange left border */
+    .hero-tel-bar {
+      border-left: 3px solid var(--orange) !important;
+      padding-left: 14px !important;
+      margin-top: 32px !important;
+    }
+
+    /* ── SERVICES ── */
+    /* svc-num : coin supérieur droit, très discret */
+    .svc-num {
+      position: absolute !important;
+      top: 0 !important;
+      right: 0 !important;
+      font-size: 9rem !important;
+      line-height: .8 !important;
+      color: rgba(168,217,108,.06) !important;
+      margin-bottom: 0 !important;
+      pointer-events: none !important;
+      user-select: none !important;
+    }
+    .svc-info { position: relative !important; }
+
+    /* Tirets orange à la place des bullets ronds */
+    .svc-pt::before {
+      content: '' !important;
+      width: 14px !important;
+      height: 2px !important;
+      border-radius: 0 !important;
+      background: var(--orange) !important;
+      margin-top: 9px !important;
+      flex-shrink: 0 !important;
+    }
+
+    /* svc-title plus grand */
+    .svc-title {
+      font-size: clamp(2.2rem, 3.5vw, 3.2rem) !important;
+      margin-bottom: 14px !important;
+    }
+
+    /* ── GALERIE ── */
+    /* Filtre actif → lime rempli */
+    .gallery-filter.active {
+      background: var(--lime) !important;
+      color: var(--noir) !important;
+      border-color: var(--lime) !important;
+    }
+    /* Filtre hover → orange */
+    .gallery-filter:hover:not(.active) {
+      color: var(--orange) !important;
+      border-color: var(--orange) !important;
+    }
+    /* gc-tag → orange */
+    .gc-tag {
+      color: var(--orange) !important;
+      border-color: rgba(243,122,31,.35) !important;
+    }
+
+    /* ── AVANT / APRÈS ── */
+    .aa-handle-line {
+      background: var(--orange) !important;
+      opacity: .9 !important;
+    }
+    .aa-handle-circle {
+      background: var(--noir) !important;
+      border: 2px solid var(--orange) !important;
+      color: var(--orange) !important;
+    }
+    .aa-badge-after {
+      background: rgba(243,122,31,.25) !important;
+      color: var(--orange) !important;
+      border-color: rgba(243,122,31,.45) !important;
+    }
+
+    /* ── À PROPOS ── */
+    /* Badge expérience → fond orange */
+    .apropos-badge {
+      background: var(--orange) !important;
+      color: #fff !important;
+    }
+    /* Mots forts → lime */
+    .apropos-text strong {
+      color: var(--lime) !important;
+      font-weight: 600 !important;
+    }
+    /* Socials hover → orange au lieu de lime-only */
+    .ap-soc:hover {
+      border-color: var(--orange) !important;
+      color: var(--orange) !important;
+      background: var(--orange-dim) !important;
+      transform: translateX(3px) !important;
+    }
+
+    /* ── TÉMOIGNAGES ── */
+    /* Carte : bordure gauche lime */
+    .temo-card {
+      border-left: 3px solid rgba(168,217,108,.35) !important;
+      transition: border-left-color .3s, border-color .3s !important;
+    }
+    .temo-card:hover {
+      border-left-color: var(--lime) !important;
+    }
+    /* Guillemet Fraunces avant le texte */
+    .temo-text::before {
+      content: '\201C';
+      font-family: 'Fraunces', serif !important;
+      font-size: 2.4rem !important;
+      line-height: .6 !important;
+      color: var(--lime) !important;
+      display: block !important;
+      margin-bottom: 8px !important;
+      font-style: normal !important;
+      opacity: .7 !important;
+    }
+    /* Étoiles → orange */
+    .temo-stars { color: var(--orange) !important; }
+    .star-btn.active, .star-btn:hover { color: var(--orange) !important; }
+
+    /* ── FAQ ── */
+    /* Section-tag FAQ → pas de ligne */
+    #faq .section-tag::after { display: none !important; }
+
+    /* ── CONTACT ── */
+    /* btn-wa → accent orange left border */
+    .btn-wa {
+      border-left: 4px solid var(--orange) !important;
+    }
+    /* Focus form → orange */
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--orange) !important;
+      box-shadow: 0 0 0 3px rgba(243,122,31,.12) !important;
+    }
+    .form-group:focus-within .form-label {
+      color: var(--orange) !important;
+    }
+
+    /* ── FOOTER ── */
+    /* ft-badge → orange */
+    .ft-badge {
+      color: var(--orange) !important;
+      border-color: rgba(243,122,31,.25) !important;
+    }
+
+    /* ── SECTION-TAGS VARIÉS ── */
+    /* Galerie → ligne orange */
+    #galerie .section-tag { color: var(--orange) !important; }
+
+    /* ── TRUST CARDS — ligne bottom scaleX au hover ── */
+    .trust-card {
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    .trust-card::after {
+      content: '' !important;
+      position: absolute !important;
+      bottom: 0 !important; left: 0 !important;
+      width: 100% !important; height: 2px !important;
+      background: var(--orange) !important;
+      transform: scaleX(0) !important;
+      transform-origin: left !important;
+      transition: transform .35s cubic-bezier(.16,1,.3,1) !important;
+    }
+    .trust-card:hover::after {
+      transform: scaleX(1) !important;
+    }
+
+    /* ── MOBILE RESPONSIVE ── */
+    @media(max-width:768px) {
+      .hero-h1 { font-size: clamp(3.6rem, 12vw, 6rem) !important; }
+      .hero-proofs { gap: 7px; }
+      .hero-proof-badge { font-size: .52rem; padding: 5px 10px; }
+      .svc-num { font-size: 6rem !important; }
+    }
+    @media(max-width:480px) {
+      .hero-h1 { font-size: clamp(3rem, 14vw, 4.8rem) !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -1475,6 +1688,12 @@
       <div class="hero-actions">
         <a href="#contact" class="btn-primary">Demander un devis gratuit</a>
         <a href="#services" class="btn-outline">Voir les services</a>
+      </div>
+      <div class="hero-proofs">
+        <span class="hero-proof-badge"><span class="hpb-dot"></span>Certifié CS TSA</span>
+        <span class="hero-proof-badge"><span class="hpb-dot"></span>Disponible 7j/7</span>
+        <span class="hero-proof-badge"><span class="hpb-dot"></span>SIRET 889 542 874</span>
+        <span class="hero-proof-badge"><span class="hpb-dot"></span>Martinique entière</span>
       </div>
       <div class="hero-tel-bar">
         <span class="tel-label">Disponible 7j/7</span>
