@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="format-detection" content="telephone=no, address=no, email=no"/>
   <title>Vert'Tige 972 — Élagueur Grimpeur Martinique</title>
   <meta name="description" content="Vert'Tige 972 — Spécialiste Élagueur Grimpeur en Martinique. Élagage, Abattage, Démontage, Broyage. Intervention Professionnelle Assurée &amp; en Sécurité. Devis gratuit : 06 96 67 13 44."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -1939,6 +1940,46 @@
     }
     @media(max-width:480px) {
       .hero-h1 { font-size: clamp(3rem, 14vw, 4.8rem) !important; }
+    }
+
+    /* ── v4 PATCH — CORRECTIONS SCREENSHOT ─────────────── */
+
+    /* Fix icône et numéro téléphone bleus dans section Contact */
+    .ch { color: var(--creme) !important; }
+    .ch svg { stroke: var(--creme) !important; }
+    .ch-lbl { color: var(--lime) !important; }
+    .ch-val { color: var(--creme) !important; }
+
+    /* SIRET proof badge — empêcher lien auto browser iOS */
+    .hero-proof-badge,
+    .hero-proof-badge * {
+      text-decoration: none !important;
+      color: rgba(237,232,223,.65) !important;
+    }
+
+    /* Supprimer FABs flottants (sticky bar suffit) */
+    .fab-group { display: none !important; }
+
+    /* Back-to-top — recentrer maintenant que les FABs sont gone */
+    #back-top {
+      left: auto !important;
+      right: 28px !important;
+      bottom: 84px !important;
+    }
+    @media(max-width:768px) {
+      #back-top {
+        right: 16px !important;
+        bottom: 72px !important;
+      }
+    }
+
+    /* Tel-bar hero — masquer sur mobile (sticky bar remplace) */
+    @media(max-width:768px) {
+      .hero-tel-bar { display: none !important; }
+      /* Preuve badges : rééquilibrer sans le tel-bar */
+      .hero-proofs { margin-bottom: 8px !important; }
+      /* Réduire padding bottom body — sticky bar 56px suffit */
+      body { padding-bottom: 56px !important; }
     }
 
   </style>
