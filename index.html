@@ -715,63 +715,6 @@
 
     /* ══ VIDÉOS / REELS ══ */
     #videos { padding: 100px 48px; background: var(--mousse); }
-    .videos-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 16px; margin-top: 0;
-    }
-    .video-card {
-      position: relative; overflow: hidden;
-      background: var(--jungle);
-      border: 1px solid rgba(168,217,108,0.1);
-      transition: border-color 0.3s;
-    }
-    .video-card:hover { border-color: rgba(168,217,108,0.3); }
-    .video-embed {
-      position: relative; padding-bottom: 177.78%;
-      height: 0; overflow: hidden;
-    }
-    .video-embed iframe {
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%; border: none;
-    }
-    /* Instagram embed override */
-    .video-card .instagram-media {
-      width: 100% !important;
-      min-width: unset !important;
-      margin: 0 !important;
-    }
-    .video-placeholder {
-      aspect-ratio: 9/16;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 12px;
-      background: linear-gradient(160deg, var(--jungle), var(--mousse));
-      cursor: pointer;
-    }
-    .video-placeholder:hover .vp-play { transform: scale(1.15); }
-    .vp-play {
-      width: 60px; height: 60px; border-radius: 50%;
-      background: var(--lime); display: grid; place-items: center;
-      font-size: 1.4rem; color: var(--noir);
-      transition: transform 0.2s;
-    }
-    .vp-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.62rem; font-weight: 700;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--lime); opacity: 0.6; text-align: center;
-    }
-    .video-caption {
-      padding: 14px 16px;
-      font-family: 'Syne', sans-serif;
-      font-size: 0.65rem; font-weight: 700;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--sable);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .video-platform {
-      font-size: 0.62rem; color: var(--lime);
-      padding: 3px 8px; border: 1px solid rgba(168,217,108,0.25);
-    }
 
     /* ══ FAQ ══ */
     #faq { padding: 100px 48px; background: var(--noir); }
@@ -812,12 +755,9 @@
     @media(max-width:960px) {
       .burger { display: flex; }
       #videos { padding: 72px 24px; }
-      .videos-grid { grid-template-columns: 1fr; gap: 20px; }
-      .video-embed { padding-bottom: 75%; }
       #faq { padding: 72px 24px; }
     }
     @media(max-width:540px) {
-      .videos-grid { grid-template-columns: 1fr; }
     }
 
 
@@ -1769,59 +1709,16 @@
     <p class="section-tag reveal">En action</p>
     <h2 class="section-h2 reveal">NOS <em>VIDÉOS</em></h2>
     <p class="reveal" style="font-size:1rem;line-height:1.8;color:var(--sable);font-weight:300;margin-bottom:48px;max-width:560px">
-      Retrouve l'ensemble de nos interventions sur Instagram <strong style="color:var(--creme)">@vert_tige972</strong> et TikTok <strong style="color:var(--creme)">@verttige972</strong>.
+      Retrouve l'ensemble de nos interventions en vidéo sur nos réseaux sociaux.
     </p>
-    <div class="videos-grid reveal">
-
-      <!-- REEL 1 -->
-      <div class="video-card">
-        <blockquote
-          class="instagram-media"
-          data-instgrm-permalink="https://www.instagram.com/reel/DWH6PVTCKro/"
-          data-instgrm-version="14"
-          style="background:#0D1210;border:1px solid rgba(168,217,108,0.12);border-radius:0;box-shadow:none;margin:0;min-width:100%;padding:0;width:100%;">
-        </blockquote>
-        <div class="video-caption">
-          <span>Abattage en action</span>
-          <span class="video-platform">Instagram</span>
-        </div>
-      </div>
-
-      <!-- REEL 2 -->
-      <div class="video-card">
-        <blockquote
-          class="instagram-media"
-          data-instgrm-permalink="https://www.instagram.com/reel/DVR5yiOEdLO/"
-          data-instgrm-version="14"
-          style="background:#0D1210;border:1px solid rgba(168,217,108,0.12);border-radius:0;box-shadow:none;margin:0;min-width:100%;padding:0;width:100%;">
-        </blockquote>
-        <div class="video-caption">
-          <span>Grimpeur en hauteur</span>
-          <span class="video-platform">Instagram</span>
-        </div>
-      </div>
-
-      <!-- REEL 3 -->
-      <div class="video-card">
-        <blockquote
-          class="instagram-media"
-          data-instgrm-permalink="https://www.instagram.com/reel/DRvSUhdEUn6/"
-          data-instgrm-version="14"
-          style="background:#0D1210;border:1px solid rgba(168,217,108,0.12);border-radius:0;box-shadow:none;margin:0;min-width:100%;padding:0;width:100%;">
-        </blockquote>
-        <div class="video-caption">
-          <span>Vert'Tige 972 en chantier</span>
-          <span class="video-platform">Instagram</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Script embed Instagram — à charger une seule fois -->
-    <div style="margin-top:32px;text-align:center">
-      <a href="https://www.instagram.com/vert_tige972" target="_blank" class="btn-outline" style="display:inline-flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:14px 28px;border:1px solid rgba(237,232,223,.2);color:var(--creme);text-decoration:none">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"\/><\/svg>
-        Voir tous les Reels
+    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center" class="reveal">
+      <a href="https://www.instagram.com/vert_tige972" target="_blank" style="display:inline-flex;align-items:center;gap:12px;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:18px 36px;border:1px solid rgba(237,232,223,.2);color:var(--creme);text-decoration:none;transition:all .3s" onmouseover="this.style.borderColor='var(--lime)';this.style.color='var(--lime)'" onmouseout="this.style.borderColor='rgba(237,232,223,.2)';this.style.color='var(--creme)'">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        Voir nos Reels Instagram
+      </a>
+      <a href="https://www.tiktok.com/@verttige972" target="_blank" style="display:inline-flex;align-items:center;gap:12px;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:18px 36px;border:1px solid rgba(237,232,223,.2);color:var(--creme);text-decoration:none;transition:all .3s" onmouseover="this.style.borderColor='var(--lime)';this.style.color='var(--lime)'" onmouseout="this.style.borderColor='rgba(237,232,223,.2)';this.style.color='var(--creme)'">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.85 4.85 0 01-1.02-.09z"/></svg>
+        Voir nos TikTok
       </a>
     </div>
   </section>
@@ -2809,6 +2706,5 @@
     }, 800);
 
   </script>
-  <script async src="//www.instagram.com/embed.js"></script>
 </body>
 </html>
