@@ -2845,6 +2845,12 @@
   </div>
 
   <script>
+    // FIX BUG REDIRECT GALERIE — forcer scroll en haut au chargement
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+
     // NAV
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50));
