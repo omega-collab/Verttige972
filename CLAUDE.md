@@ -56,9 +56,15 @@
 
 1. Allan ouvre une session Claude Code (web, mobile ou terminal)
 1. Claude Code lit et modifie les fichiers directement dans le repo
-1. Claude Code commit et push sur la branche `main` (ou une branche feature)
-1. Netlify détecte le push GitHub et déploie automatiquement
+1. Claude Code commit et push les changements
+1. **Netlify détecte le push sur `main` et déploie automatiquement**
 1. **Alternative manuelle** : Allan télécharge le fichier et upload sur Netlify
+
+> ⚠️ **RÈGLE ABSOLUE DE DÉPLOIEMENT** : Netlify écoute **uniquement la branche `main`**. Si le harness impose une branche feature (ex: `claude/xxx`), Claude doit **toujours** effectuer les deux étapes suivantes après le push de la branche feature :
+> ```bash
+> git checkout main && git merge <branche-feature> --no-edit && git push -u origin main
+> ```
+> Ne jamais considérer un déploiement comme terminé tant que `main` n'a pas été mis à jour et pushé.
 
 > **Note** : Si le déploiement automatique Netlify ↔ GitHub n'est pas encore configuré, le mettre en place en priorité (Netlify > Site settings > Build & deploy > Link repository).
 
@@ -227,8 +233,8 @@ const nom = "Vert'Tige 972";
 
 ### Bonnes pratiques Claude Code pour ce projet
 
-1. **Toujours travailler sur une branche feature** pour les changements majeurs (ex: `feature/nouvelle-galerie`)
 1. **Commits atomiques** avec messages descriptifs en français
+1. **Toujours merger sur `main` et pusher `main` à la fin** — Netlify ne déploie que depuis `main`
 1. **Vérifier l'échappement apostrophe** avant chaque commit (grep pour `'Vert'Tige'` sans échappement)
 1. **Tester le HTML** en local si possible avant de push
 1. **Ne jamais push de base64 cassé** — valider l'intégrité des images encodées
