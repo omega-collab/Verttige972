@@ -1978,6 +1978,170 @@
       body { padding-bottom: 56px !important; }
     }
 
+    /* ══════════════════════════════════════════════════════
+       REDESIGN v5 — IMPECCABLE + CLAUDE-FRONTEND APPLIQUÉS
+       Corrections ciblées :
+       1. #confiance — purge grille cards identiques (ban absolu impeccable)
+       2. Reveals — ease-out-expo sur tout (claude-frontend vector 3)
+       3. Services — dot-grid fond (claude-frontend vector 4)
+       4. Temo — guillemet watermark éditorial
+       5. Section-h2 — entrée plus dramatique
+    ══════════════════════════════════════════════════════ */
+
+    /* ── 1. #CONFIANCE — BANDE STATS ÉDITORIALE ── */
+    /* Avant : 4 cards identiques icon+num+label (ban impeccable "identical card grids")
+       Après : bande horizontale, numbers typographiques, texte gauche, zéro card */
+    #confiance {
+      display: flex !important;
+      grid-template-columns: unset !important;
+      background: var(--jungle) !important;
+      border-top: 1px solid rgba(237,232,223,0.04);
+      border-bottom: 1px solid rgba(237,232,223,0.04);
+    }
+    .trust-card {
+      background: transparent !important;
+      border: none !important;
+      border-right: 1px solid rgba(237,232,223,0.06) !important;
+      padding: 64px 48px !important;
+      text-align: left !important;
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-end !important;
+      gap: 10px !important;
+      transform: none !important;
+      box-shadow: none !important;
+      transition: background .3s var(--ease-expo) !important;
+    }
+    .trust-card:last-child { border-right: none !important; }
+    .trust-card:hover {
+      background: rgba(168,217,108,0.025) !important;
+      transform: none !important;
+      box-shadow: none !important;
+      border-right-color: rgba(237,232,223,0.1) !important;
+    }
+    /* Supprimer les icônes emoji — signature "template app" */
+    .trust-icon { display: none !important; }
+    /* Supprimer la ligne du haut au hover (artefact v1) */
+    .trust-card::before { display: none !important; }
+    /* Nombres typographiques, gauche, extrêmes */
+    .trust-num {
+      text-align: left !important;
+      font-family: 'Fraunces', serif !important;
+      font-size: clamp(4rem, 7vw, 7rem) !important;
+      font-weight: 800 !important;
+      line-height: .85 !important;
+      letter-spacing: -.04em !important;
+      text-shadow: none !important;
+      margin-bottom: 0 !important;
+    }
+    .trust-label {
+      text-align: left !important;
+      font-size: .58rem !important;
+      letter-spacing: .24em !important;
+      opacity: .5 !important;
+      color: var(--sable) !important;
+    }
+    /* Alternance orange/lime — stratégie couleur Committed */
+    .trust-card:nth-child(1) .trust-num,
+    .trust-card:nth-child(3) .trust-num { color: var(--orange) !important; }
+    .trust-card:nth-child(2) .trust-num,
+    .trust-card:nth-child(4) .trust-num { color: var(--lime) !important; }
+    /* Mobile : 2 colonnes */
+    @media(max-width:768px) {
+      #confiance { flex-wrap: wrap !important; }
+      .trust-card {
+        flex: 0 0 50% !important;
+        padding: 36px 28px !important;
+        border-right: 1px solid rgba(237,232,223,0.06) !important;
+        border-bottom: 1px solid rgba(237,232,223,0.06) !important;
+      }
+      .trust-card:nth-child(2),
+      .trust-card:nth-child(4) { border-right: none !important; }
+      .trust-card:nth-child(3),
+      .trust-card:nth-child(4) { border-bottom: none !important; }
+    }
+
+    /* ── 2. REVEALS — EASE-OUT-EXPO (claude-frontend vector 3) ── */
+    .reveal {
+      transition:
+        opacity .7s var(--ease-expo),
+        transform .7s var(--ease-expo) !important;
+    }
+    /* Headings : entrée plus ample */
+    .section-h2.reveal {
+      transform: translateY(40px) !important;
+      transition:
+        opacity .85s var(--ease-expo),
+        transform .85s var(--ease-expo) !important;
+    }
+    .section-h2.reveal.visible {
+      transform: translateY(0) !important;
+    }
+
+    /* ── 3. SERVICES — DOT GRID FOND (claude-frontend vector 4) ── */
+    /* Profondeur atmosphérique, pas de flat color */
+    #services {
+      background:
+        radial-gradient(circle, rgba(168,217,108,0.045) 1px, transparent 1px),
+        var(--noir) !important;
+      background-size: 26px 26px, 100% !important;
+      background-position: 12px 12px, 0 0 !important;
+    }
+    /* Ombre de zoom sur image service */
+    .svc-visual img {
+      transition: transform .7s var(--ease-expo) !important;
+    }
+
+    /* ── 4. TÉMOIGNAGES — GUILLEMET WATERMARK (éditorial) ── */
+    .temo-card {
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    .temo-card::after {
+      content: '\201C';
+      position: absolute !important;
+      bottom: -24px !important;
+      right: 12px !important;
+      font-family: 'Fraunces', serif !important;
+      font-size: 8rem !important;
+      font-weight: 800 !important;
+      line-height: 1 !important;
+      color: rgba(168,217,108,0.045) !important;
+      pointer-events: none !important;
+      user-select: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+
+    /* ── 5. GALERIE — TAGS ORANGE RENFORCEMENT ── */
+    .gallery-filter {
+      font-family: 'Syne', sans-serif;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      padding: 10px 22px;
+      border: 1px solid rgba(237,232,223,0.15);
+      color: rgba(237,232,223,.5);
+      background: none;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    /* ── 6. HERO PROOF BADGES — PADDING MOBILE ── */
+    @media(max-width:480px) {
+      .hero-proofs { gap: 6px !important; }
+      .hero-proof-badge { padding: 5px 9px !important; font-size: .5rem !important; }
+    }
+
+    /* ── 7. SECTION À PROPOS — FOND PLUS CHAUD ── */
+    #apropos {
+      background:
+        radial-gradient(ellipse 60% 50% at 100% 50%, rgba(243,122,31,0.04) 0%, transparent 60%),
+        var(--noir) !important;
+    }
+
   </style>
 </head>
 <body>
