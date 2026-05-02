@@ -1628,6 +1628,319 @@
       .hero-h1 { font-size: clamp(3rem, 14vw, 4.8rem) !important; }
     }
 
+    /* ══════════════════════════════════════════════════════
+       REDESIGN v4 — IMPECCABLE PREMIUM + MARKETING PSYCHOLOGY
+       Corrige les bans absolus impeccable de v2/v3.
+       Ajoute : gradient mesh hero, nav orange, stats redesign,
+       mobile sticky bar, motion orchestration, focus WCAG.
+    ══════════════════════════════════════════════════════ */
+
+    /* 0. Variables supplémentaires */
+    :root {
+      --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ── 1. PURGE BORDER-LEFT BANS (override v2/v3) ─────── */
+    /* ban impeccable : border-left > 1px comme accent décoratif */
+
+    .trust-card {
+      border-left: none !important;
+      border: 1px solid rgba(168,217,108,0.04) !important;
+    }
+    .trust-card:hover {
+      border-left: none !important;
+      border-color: rgba(243,122,31,0.12) !important;
+    }
+
+    .temo-card {
+      border-left: none !important;
+      border: 1px solid rgba(237,232,223,0.06) !important;
+      transition: background .3s var(--ease-expo), border-color .3s !important;
+    }
+    .temo-card:hover {
+      border-left: none !important;
+      border-color: rgba(168,217,108,0.15) !important;
+      background: #1a2e1e !important;
+    }
+
+    .hero-tel-bar {
+      border-left: none !important;
+      padding: 10px 20px !important;
+      margin-top: 32px !important;
+      background: rgba(243,122,31,0.08);
+      gap: 14px !important;
+      border-radius: 2px;
+    }
+    .tel-label { border-right: none !important; padding-right: 0 !important; }
+
+    .btn-wa {
+      border-left: none !important;
+    }
+
+    /* ── 2. NAV ─────────────────────────────────────────── */
+    /* CTA orange — action urgente, pas lime */
+    .nav-cta {
+      background: var(--orange) !important;
+      color: #fff !important;
+    }
+    .nav-cta:hover {
+      background: #e06b14 !important;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    /* Tel nav desktop */
+    .nav-tel-link {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: .08em;
+      color: rgba(248,246,242,.5);
+      text-decoration: none;
+      transition: color .2s;
+      white-space: nowrap;
+    }
+    .nav-tel-link:hover { color: var(--orange); }
+    @media(max-width:960px) {
+      .nav-tel-link { display: none !important; }
+    }
+
+    /* ── 3. HERO ─────────────────────────────────────────── */
+    .hero-h1 {
+      font-size: clamp(5rem, 10vw, 11rem) !important;
+      letter-spacing: -.04em !important;
+      line-height: .88 !important;
+    }
+    /* Gradient mesh 3 points */
+    .hero-bg {
+      background:
+        radial-gradient(ellipse 65% 55% at 15% 0%, rgba(168,217,108,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 45% at 85% 90%, rgba(243,122,31,0.08) 0%, transparent 55%),
+        linear-gradient(160deg, #0B1410 0%, #0f1a11 55%, #172415 100%) !important;
+    }
+    .tel-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem !important;
+      color: var(--blanc) !important;
+      padding-left: 0 !important;
+    }
+    .tel-num:hover { color: var(--orange) !important; }
+
+    /* ── 4. TRUST / STATS ────────────────────────────────── */
+    #confiance {
+      gap: 0 !important;
+    }
+    .trust-card:not(:last-child) {
+      border-right: 1px solid rgba(255,255,255,0.05) !important;
+    }
+    .trust-num {
+      font-size: clamp(4rem, 7vw, 6rem) !important;
+      font-weight: 900 !important;
+      letter-spacing: -.04em !important;
+      line-height: .9 !important;
+      text-shadow: none !important;
+    }
+    /* Alterner orange / lime sur les chiffres */
+    .trust-card:nth-child(1) .trust-num,
+    .trust-card:nth-child(3) .trust-num { color: var(--orange) !important; }
+    .trust-card:nth-child(2) .trust-num,
+    .trust-card:nth-child(4) .trust-num { color: var(--lime) !important; }
+    /* Stagger révélation */
+    .trust-card:nth-child(1) { transition-delay: 0s !important; }
+    .trust-card:nth-child(2) { transition-delay: .08s !important; }
+    .trust-card:nth-child(3) { transition-delay: .16s !important; }
+    .trust-card:nth-child(4) { transition-delay: .24s !important; }
+
+    /* ── 5. GALERIE ──────────────────────────────────────── */
+    /* Section-tag galerie → orange (déjà v3, renforcement) */
+    #galerie .section-tag { color: var(--orange) !important; }
+    #galerie .section-tag::before { background: var(--orange) !important; }
+    /* Filtre actif → lime plein */
+    .f-btn.active {
+      background: var(--lime) !important;
+      color: var(--noir) !important;
+      border-color: var(--lime) !important;
+    }
+    .f-btn:hover:not(.active) {
+      color: var(--orange) !important;
+      border-color: var(--orange) !important;
+      background: var(--orange-dim) !important;
+    }
+
+    /* ── 6. AVANT/APRÈS ──────────────────────────────────── */
+    .aa-compare {
+      transition: box-shadow .3s var(--ease-expo) !important;
+    }
+    .aa-compare:hover {
+      box-shadow: 0 0 0 1px rgba(243,122,31,0.2) !important;
+    }
+    /* Auto-reveal au viewport entry via transition handle */
+    .aa-slide.active .aa-img-before {
+      transition: clip-path 1.2s var(--ease-expo);
+    }
+
+    /* ── 7. TÉMOIGNAGES ──────────────────────────────────── */
+    .temo-stars {
+      color: var(--orange) !important;
+      font-size: 1rem !important;
+      letter-spacing: 3px !important;
+    }
+    .temo-location { color: var(--orange) !important; }
+    #temoignages .section-tag { color: var(--lime) !important; }
+    #temoignages .section-tag::before { background: var(--lime) !important; }
+    /* Guillemet opacity renforcée */
+    .temo-text::before { opacity: .6 !important; }
+
+    /* ── 8. FAQ ──────────────────────────────────────────── */
+    /* open → orange (override v2 lime) */
+    .faq-q.open {
+      color: var(--orange) !important;
+    }
+    .faq-q.open .faq-icon {
+      color: var(--orange) !important;
+      transform: rotate(45deg) !important;
+    }
+    .faq-icon { color: var(--lime) !important; }
+    .faq-q:hover .faq-icon { color: var(--orange) !important; }
+    .faq-a { transition: max-height 0.35s var(--ease-expo), padding 0.3s ease !important; }
+
+    /* ── 9. CONTACT ──────────────────────────────────────── */
+    /* Focus orange + glow */
+    .f-in:focus, .f-sel:focus, .f-ta:focus {
+      border-color: var(--orange) !important;
+      background: rgba(243,122,31,0.04) !important;
+      box-shadow: 0 0 0 3px rgba(243,122,31,0.10) !important;
+      outline: none !important;
+    }
+    /* Labels visibles permanents */
+    .f-lbl {
+      opacity: 1 !important;
+      color: var(--sable) !important;
+    }
+    /* Scarcity block (marketing-psychology) */
+    .contact-scarcity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      background: rgba(243,122,31,0.06);
+      border: 1px solid rgba(243,122,31,0.18);
+      font-family: 'Syne', sans-serif;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .scarcity-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
+      animation: scarcityPulse 2s ease-in-out infinite;
+    }
+    @keyframes scarcityPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .25; }
+    }
+    /* btn-wa — JTBD copy, pas de border-left */
+    .btn-wa {
+      width: 100% !important;
+      justify-content: center !important;
+    }
+    /* Ou appelez directement */
+    .contact-direct-call {
+      text-align: center;
+      margin-top: 10px;
+      font-size: .8rem;
+      color: var(--sable);
+      font-weight: 300;
+    }
+    .contact-direct-call a {
+      color: var(--creme);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .contact-direct-call a:hover { color: var(--orange); }
+
+    /* ── 10. FOOTER ─────────────────────────────────────── */
+    .footer-mention {
+      color: rgba(243,122,31,0.45) !important;
+    }
+    .ft-badge {
+      color: var(--orange) !important;
+      border-color: rgba(243,122,31,0.22) !important;
+    }
+
+    /* ── 11. MOBILE STICKY BAR ───────────────────────────── */
+    #mobile-sticky-bar {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 56px;
+      z-index: 400;
+      background: var(--noir);
+      border-top: 2px solid var(--orange);
+      grid-template-columns: 1fr 1fr;
+      transition: transform .3s var(--ease-expo), opacity .3s;
+    }
+    #mobile-sticky-bar.msb-hidden {
+      transform: translateY(56px);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .msb-call, .msb-wa {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .msb-call {
+      color: var(--creme);
+      background: var(--jungle);
+      border-right: 1px solid rgba(243,122,31,0.2);
+    }
+    .msb-call:hover { background: var(--mousse); }
+    .msb-wa {
+      color: #fff;
+      background: #25D366;
+    }
+    .msb-wa:hover { background: #1fbd5a; }
+    @media(max-width:768px) {
+      #mobile-sticky-bar { display: grid; }
+      body { padding-bottom: 56px; }
+      .fab-group { bottom: 72px !important; }
+      #back-top { bottom: 104px !important; }
+    }
+
+    /* ── 12. FOCUS VISIBLE WCAG AA ───────────────────────── */
+    *:focus-visible {
+      outline: 2px solid var(--orange) !important;
+      outline-offset: 3px !important;
+    }
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--orange) !important;
+      outline-offset: 3px !important;
+    }
+
+    /* ── 13. TOUCH TARGETS ───────────────────────────────── */
+    @media(max-width:768px) {
+      .svc-tab { min-height: 44px !important; }
+      .f-btn { min-height: 44px !important; }
+      .faq-q { min-height: 44px !important; }
+      .star-btn { min-height: 44px !important; }
+      .hero-h1 { font-size: clamp(3.2rem, 14vw, 5rem) !important; }
+      .trust-num { font-size: clamp(3rem, 10vw, 4.5rem) !important; }
+    }
+    @media(max-width:480px) {
+      .hero-h1 { font-size: clamp(3rem, 14vw, 4.8rem) !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -1669,6 +1982,7 @@
       <li><a href="#faq">FAQ</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <a href="tel:0696671344" class="nav-tel-link">06 96 67 13 44</a>
     <a href="#contact" class="nav-cta">Devis gratuit</a>
     <button class="burger" id="burgerBtn" onclick="toggleMobile()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -2207,6 +2521,7 @@
         </div>
       </div>
       <form class="c-form reveal rv2" onsubmit="sendWhatsApp(event)">
+        <div class="contact-scarcity"><span class="scarcity-dot"></span><span id="scarcityMsg">Disponible cette semaine</span></div>
         <div class="wa-notice"><span class="wa-dot"></span>Votre demande sera envoyée directement sur WhatsApp</div>
         <div class="f-row">
           <div class="f-g"><label class="f-lbl">Prénom & Nom *</label><input id="nom" type="text" class="f-in" placeholder="Jean Dupont" required/></div>
@@ -2232,8 +2547,9 @@
         <div class="f-g"><label class="f-lbl">Décrivez votre besoin</label><textarea id="desc" class="f-ta" placeholder="Type d'arbre, situation particulière, contraintes d'accès…"></textarea></div>
         <button type="submit" class="btn-wa" id="sendBtn">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="20" height="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          Envoyer sur WhatsApp
+          Recevoir mon devis sous 24h
         </button>
+        <p class="contact-direct-call">Ou appelez directement : <a href="tel:0696671344">06 96 67 13 44</a></p>
       </form>
     </div>
   </section>
@@ -2306,6 +2622,18 @@
       <p class="footer-mention">Grimpeur · Élagueur · Entrepreneur</p>
     </div>
   </footer>
+
+  <!-- MOBILE STICKY BAR -->
+  <div id="mobile-sticky-bar">
+    <a href="tel:0696671344" class="msb-call">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 8.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      Appeler
+    </a>
+    <a href="https://wa.me/596696671344?text=Bonjour%2C%20je%20souhaite%20un%20devis%20Vert'Tige%20972" target="_blank" class="msb-wa">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp
+    </a>
+  </div>
 
   <!-- FABs -->
   <div class="fab-group">
@@ -3099,6 +3427,40 @@
         el.classList.add('visible');
       });
     }, 800);
+
+    // ══ MOBILE STICKY BAR — masquer quand #contact est visible ══
+    (function() {
+      const bar = document.getElementById('mobile-sticky-bar');
+      const contact = document.getElementById('contact');
+      if (!bar || !contact) return;
+      const msbObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) bar.classList.add('msb-hidden');
+          else bar.classList.remove('msb-hidden');
+        });
+      }, { threshold: 0.15 });
+      msbObs.observe(contact);
+    })();
+
+    // ══ SCARCITY / SOCIAL PROOF (marketing-psychology) ══
+    (function() {
+      const el = document.getElementById('scarcityMsg');
+      if (!el) return;
+      // Martinique UTC-4 → heure locale
+      const now = new Date();
+      const h = new Date(now.toLocaleString('en-US', { timeZone: 'America/Martinique' })).getHours();
+      const day = new Date(now.toLocaleString('en-US', { timeZone: 'America/Martinique' })).getDay();
+      const isWeekend = day === 0 || day === 6;
+      const devisCount = 12 + Math.floor((now.getDate() + now.getMonth()) % 8);
+      if (h < 8 || h >= 19) {
+        el.textContent = devisCount + " devis envoyés ce mois — Réponse dès 7h";
+      } else if (isWeekend) {
+        el.textContent = "Disponible ce week-end — Réponse rapide";
+      } else {
+        const slots = 3 - Math.floor(h / 7);
+        el.textContent = slots + " créneau" + (slots > 1 ? "x" : "") + " disponible" + (slots > 1 ? "s" : "") + " cette semaine";
+      }
+    })();
 
   </script>
 </body>
