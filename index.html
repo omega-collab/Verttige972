@@ -4057,26 +4057,24 @@
         initComp(comp);
       });
 
-      // Mobile: scroll-driven animation
-      if (window.innerWidth <= 768) {
-        let lastScrollY = window.scrollY;
-        window.addEventListener('scroll', function() {
-          const currentComp = slides[current].querySelector('.aa-compare');
-          if (!currentComp) return;
-          const rect = currentComp.getBoundingClientRect();
-          const viewH = window.innerHeight;
-          if (rect.top < viewH && rect.bottom > 0) {
-            const scrollDelta = window.scrollY - lastScrollY;
-            const handle = currentComp.querySelector('.aa-handle');
-            const currentLeft = parseFloat(handle.style.left) || 50;
-            let currentPct = currentLeft / 100;
-            currentPct += scrollDelta * 0.003;
-            currentPct = Math.min(Math.max(currentPct, 0.02), 0.98);
-            setSliderPos(currentComp, currentPct);
-          }
-          lastScrollY = window.scrollY;
-        }, {passive: true});
-      }
+      // Scroll-driven slider animation — mobile et desktop
+      var lastScrollY = window.scrollY;
+      window.addEventListener('scroll', function() {
+        var currentComp = slides[current].querySelector('.aa-compare');
+        if (!currentComp) return;
+        var rect = currentComp.getBoundingClientRect();
+        var viewH = window.innerHeight;
+        if (rect.top < viewH && rect.bottom > 0) {
+          var scrollDelta = window.scrollY - lastScrollY;
+          var handle = currentComp.querySelector('.aa-handle');
+          var currentLeft = parseFloat(handle.style.left) || 50;
+          var currentPct = currentLeft / 100;
+          currentPct += scrollDelta * 0.003;
+          currentPct = Math.min(Math.max(currentPct, 0.02), 0.98);
+          setSliderPos(currentComp, currentPct);
+        }
+        lastScrollY = window.scrollY;
+      }, {passive: true});
 
       // Swipe to change slide (not interfere with slider drag)
       let swipeStartX = 0, swipeStartY = 0, isSwiping = false;
@@ -4110,27 +4108,6 @@
         if (e.key === 'ArrowRight') goTo(current + 1);
       });
 
-      // Scroll → slide sur desktop (wheel sur window)
-      var aaSection = document.getElementById('avantapres');
-      if (aaSection) {
-        var wLocked = false;
-        window.addEventListener('wheel', function(e) {
-          var rect = aaSection.getBoundingClientRect();
-          var sectionMid = rect.top + rect.height / 2;
-          var vpMid = window.innerHeight / 2;
-          // N'intercepte que quand la section est centrée dans le viewport
-          if (Math.abs(sectionMid - vpMid) > window.innerHeight * 0.45) return;
-          // Aux extrémités → laisse la page défiler normalement
-          if (e.deltaY > 0 && current >= total - 1) return;
-          if (e.deltaY < 0 && current <= 0) return;
-          e.preventDefault();
-          if (wLocked) return;
-          wLocked = true;
-          setTimeout(function() { wLocked = false; }, 700);
-          if (e.deltaY > 0) goTo(current + 1);
-          else goTo(current - 1);
-        }, { passive: false });
-      }
     })();
 
 
