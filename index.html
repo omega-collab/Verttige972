@@ -2760,6 +2760,76 @@
       }
     }
 
+    /* ══════════════════════════════════════════════════════
+       NAV SCROLL-HIDE + MOBILE BURGER-ONLY + FABs
+    ══════════════════════════════════════════════════════ */
+
+    /* ─── Transition hide/show nav au scroll ─── */
+    nav {
+      transition: background .4s, padding .3s, border-color .4s,
+                  transform .35s cubic-bezier(.4,0,.2,1) !important;
+    }
+    nav.nav-hidden {
+      transform: translateY(-100%) !important;
+    }
+
+    /* ─── MOBILE : burger seul en haut à droite ─── */
+    @media (max-width: 768px) {
+      /* Cacher logo, CTA, liens, numéro */
+      .nav-logo        { display: none !important; }
+      .nav-cta         { display: none !important; }
+      .nav-tel-link    { display: none !important; }
+      .nav-links       { display: none !important; }
+
+      /* Nav transparent, aligné à droite */
+      nav {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        border-bottom: none !important;
+        padding: 14px 16px !important;
+        justify-content: flex-end !important;
+      }
+      nav.scrolled {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        border-bottom: none !important;
+        padding: 14px 16px !important;
+      }
+      /* Burger avec fond semi-transparent pour lisibilité sur photo */
+      .burger {
+        background: rgba(13,18,16,.55) !important;
+        border-radius: 8px !important;
+        padding: 8px !important;
+        backdrop-filter: blur(6px) !important;
+        display: flex !important;
+      }
+    }
+
+    /* ─── MOBILE : désactiver barre bas, activer FABs ─── */
+    @media (max-width: 768px) {
+      /* Masquer la sticky bar pleine largeur */
+      #mobile-sticky-bar {
+        display: none !important;
+      }
+      /* Supprimer le padding bas créé pour la sticky bar */
+      body {
+        padding-bottom: 0 !important;
+      }
+      /* Afficher les bulles FAB flottantes */
+      .fab-group {
+        display: flex !important;
+        bottom: 20px !important;
+        right: 16px !important;
+        z-index: 400 !important;
+      }
+      /* Taille des bulles adaptée au tactile */
+      .fab {
+        width: 56px !important;
+        height: 56px !important;
+        box-shadow: 0 4px 24px rgba(0,0,0,.45) !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -4326,27 +4396,43 @@
 
   </script>
 
-  <!-- MOBILE v3 : nettoyage DOM + fixes iOS au runtime -->
+  <!-- MOBILE v3 + NAV SCROLL-HIDE -->
   <script>
     (function() {
-      if (window.innerWidth > 960) return;
-
-      /* Supprimer svc-num du DOM entièrement sur mobile */
-      document.querySelectorAll('.svc-num').forEach(function(el) {
-        el.parentNode && el.parentNode.removeChild(el);
-      });
-
-      /* Détecter et logguer l'élément le plus large (debug overflow) */
-      function findWide() {
-        var vw = document.documentElement.clientWidth;
-        var worst = null, worstW = vw;
-        document.querySelectorAll('*').forEach(function(el) {
-          var r = el.getBoundingClientRect();
-          if (r.right > worstW) { worstW = r.right; worst = el; }
+      /* ── Supprimer svc-num du DOM sur mobile ── */
+      if (window.innerWidth <= 960) {
+        document.querySelectorAll('.svc-num').forEach(function(el) {
+          el.parentNode && el.parentNode.removeChild(el);
         });
-        if (worst) worst.style.maxWidth = '100%';
       }
-      window.addEventListener('load', findWide);
+
+      /* ── Nav hide on scroll-down, show on scroll-up ── */
+      var nav = document.getElementById('nav');
+      var lastY = window.scrollY;
+      var ticking = false;
+      window.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() {
+          var currentY = window.scrollY;
+          if (currentY > lastY && currentY > 80) {
+            nav.classList.add('nav-hidden');
+          } else {
+            nav.classList.remove('nav-hidden');
+          }
+          lastY = currentY;
+          ticking = false;
+        });
+      }, {passive: true});
+
+      /* ── Sur mobile : forcer fab-group visible (override display:none du redesign v4) ── */
+      if (window.innerWidth <= 768) {
+        var fab = document.querySelector('.fab-group');
+        if (fab) fab.style.cssText += 'display:flex!important;';
+        var bar = document.getElementById('mobile-sticky-bar');
+        if (bar) bar.style.cssText += 'display:none!important;';
+        document.body.style.paddingBottom = '0';
+      }
     })();
   </script>
 </body>
