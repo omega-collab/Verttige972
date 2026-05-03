@@ -3622,23 +3622,24 @@
 
       const urgenceIcon = urgence === 'Urgent' ? '🔴' : '🟢';
 
-      const message =
-        '🌿 *VERT’TIGE 972 — NOUVELLE DEMANDE*\n' +
-        '━━━━━━━━━━━━━━━━━━━━\n' +
-        '*CLIENT*\n' +
-        '👤 ' + nom + '\n' +
-        '📞 ' + tel + '\n' +
-        '📍 ' + ville + '\n' +
-        '━━━━━━━━━━━━━━━━━━━━\n' +
-        '*CHANTIER*\n' +
-        '🔧 Service : ' + service + '\n' +
-        '🌳 Hauteur : ' + hauteur + '\n' +
-        '🚧 Accès : ' + access + '\n' +
-        urgenceIcon + ' Urgence : ' + urgence + '\n' +
-        '━━━━━━━━━━━━━━━━━━━━\n' +
-        '💬 *Détails :* ' + desc + '\n' +
-        '━━━━━━━━━━━━━━━━━━━━\n' +
-        '_Via verttige972.fr_';
+      const message = [
+        "VERT'TIGE 972 — NOUVELLE DEMANDE",
+        "━━━━━━━━━━━━━━━━━━━━",
+        "*CLIENT*",
+        "👤 " + nom,
+        "📞 " + tel,
+        "📍 " + ville,
+        "━━━━━━━━━━━━━━━━━━━━",
+        "*CHANTIER*",
+        "📝 Service : " + service,
+        "🌳 Hauteur : " + hauteur,
+        "🚧 Accès : " + access,
+        urgenceIcon + " Urgence : " + urgence,
+        "━━━━━━━━━━━━━━━━━━━━",
+        "💬 Détails : " + desc,
+        "━━━━━━━━━━━━━━━━━━━━",
+        "_www.elagageabattagemartinique.com_"
+      ].join("\n");
 
       window.open('https://wa.me/596696671344?text=' + encodeURIComponent(message));
 
