@@ -2653,21 +2653,7 @@
       }
     }
 
-    /* ─── SUPPRIMER LE NUMÉRO "01" EN HAUT À DROITE DES SERVICES ─── */
-    @media (max-width: 960px) {
-      .svc-num {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        position: static !important;
-        height: 0 !important;
-        width: 0 !important;
-        font-size: 0 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-      }
-    }
+    /* svc-num visible sur mobile comme sur desktop */
 
     /* ══════════════════════════════════════════════════════
        MOBILE v3 — Fix définitif overflow + gaps + layout
@@ -4526,12 +4512,6 @@
   <!-- MOBILE v3 + NAV SCROLL-HIDE -->
   <script>
     (function() {
-      /* ── Supprimer svc-num du DOM sur mobile ── */
-      if (window.innerWidth <= 960) {
-        document.querySelectorAll('.svc-num').forEach(function(el) {
-          el.parentNode && el.parentNode.removeChild(el);
-        });
-      }
 
       /* ── Nav hide on scroll-down, show on scroll-up ── */
       var nav = document.getElementById('nav');
