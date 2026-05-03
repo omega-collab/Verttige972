@@ -2856,15 +2856,43 @@
     .ft2-copy, .ft2-legal { font-family: 'Syne',sans-serif; font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(200,180,154,.3); }
     .ft2-legal { cursor: pointer; transition: color .2s; }
     .ft2-legal:hover { color: rgba(200,180,154,.6); }
+    /* ── Tablette : 2×2 ── */
     @media (max-width: 960px) {
-      .ft2-grid { grid-template-columns: 1fr 1fr; }
-      .ft2-col { border-right: none; border-bottom: 1px solid rgba(237,232,223,.06); padding: 28px 24px; }
-      .ft2-col:nth-child(odd) { border-right: 1px solid rgba(237,232,223,.06); }
+      .ft2-grid { grid-template-columns: 1fr 1fr !important; }
+      .ft2-col { border-right: none !important; border-bottom: 1px solid rgba(237,232,223,.06); padding: 24px 20px; }
+      .ft2-col:nth-child(odd) { border-right: 1px solid rgba(237,232,223,.06) !important; }
     }
-    @media (max-width: 540px) {
-      .ft2-grid { grid-template-columns: 1fr; }
-      .ft2-col { border-right: none !important; padding: 24px 20px; }
-      .ft2-bottom { flex-direction: column; align-items: flex-start; gap: 6px; padding: 16px 20px; }
+
+    /* ── Mobile : 4 colonnes compactes ── */
+    @media (max-width: 768px) {
+      .ft2-grid { grid-template-columns: 1.3fr 1fr 1fr 1fr !important; }
+      .ft2-col { padding: 16px 6px !important; gap: 5px !important; border-bottom: none !important; }
+      .ft2-col:not(:last-child) { border-right: 1px solid rgba(237,232,223,.06) !important; }
+
+      /* Badge V plus petit */
+      .ft2-badge { width: 22px !important; height: 22px !important; font-size: .75rem !important; border-radius: 3px !important; }
+
+      /* Nom de marque compact */
+      .ft2-brand { font-size: .9rem !important; }
+
+      /* Description masquée (trop longue sur mobile 4 col) */
+      .ft2-desc { display: none !important; }
+
+      /* SIRET discret */
+      .ft2-siret { font-size: .48rem !important; letter-spacing: .08em !important; }
+
+      /* Labels de section */
+      .ft2-label { font-size: .48rem !important; letter-spacing: .14em !important; margin-bottom: 2px !important; }
+
+      /* Liens */
+      .ft2-link { font-size: .68rem !important; line-height: 1.35 !important; }
+
+      /* Logo row : logo + nom verticaux sur mobile */
+      .ft2-logo-row { flex-direction: column !important; align-items: flex-start !important; gap: 5px !important; }
+
+      /* Barre bas */
+      .ft2-bottom { flex-direction: column !important; align-items: flex-start !important; gap: 4px !important; padding: 12px 10px !important; }
+      .ft2-copy, .ft2-legal { font-size: .5rem !important; }
     }
 
   </style>
