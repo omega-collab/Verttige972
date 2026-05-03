@@ -1415,7 +1415,36 @@
       .trust-num { font-size: clamp(2.8rem, 10vw, 4rem) !important; }
     }
 
-  </style>
+  
+    /* == GOOGLE REVIEWS == */
+    .grev-wrap { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
+    .grev-header { text-align: center; margin-bottom: 28px; }
+    .grev-badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 40px; padding: 10px 22px; margin-top: 18px; flex-wrap: wrap; justify-content: center; }
+    .grev-score-num { font-family: 'Bebas Neue',sans-serif; font-size: 1.7rem; color: #fff; letter-spacing: .02em; line-height: 1; }
+    .grev-stars-badge { color: #F5A623; font-size: 1rem; letter-spacing: 2px; }
+    .grev-count-txt { font-family: 'Syne',sans-serif; font-size: .7rem; color: rgba(237,232,223,.45); letter-spacing: .12em; text-transform: uppercase; }
+    .grev-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 24px; }
+    .grev-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; transition: border-color .3s, transform .2s; }
+    .grev-card:hover { border-color: rgba(168,217,108,.25); transform: translateY(-2px); }
+    .grev-card.grev-hidden { display: none; }
+    .grev-card-top { display: flex; align-items: center; gap: 10px; }
+    .grev-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne',sans-serif; font-weight: 700; font-size: .82rem; color: #fff; flex-shrink: 0; }
+    .grev-info { flex: 1; min-width: 0; }
+    .grev-name { font-family: 'Syne',sans-serif; font-weight: 700; font-size: .8rem; color: var(--creme); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .grev-date { font-size: .66rem; color: rgba(237,232,223,.32); margin-top: 2px; }
+    .grev-glogo { flex-shrink: 0; opacity: .65; }
+    .grev-stars-row { color: #F5A623; font-size: .88rem; letter-spacing: 2px; }
+    .grev-text { font-family: 'Barlow',sans-serif; font-size: .82rem; line-height: 1.65; color: rgba(237,232,223,.68); flex: 1; }
+    .grev-more-btn { display: flex; align-items: center; gap: 8px; background: none; border: 1px solid rgba(237,232,223,.15); color: rgba(237,232,223,.55); font-family: 'Syne',sans-serif; font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 12px 24px; border-radius: 4px; cursor: pointer; margin: 0 auto 32px; transition: all .25s; }
+    .grev-more-btn:hover { border-color: var(--lime); color: var(--lime); }
+    .grev-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .grev-btn-main { display: inline-flex; align-items: center; gap: 10px; background: var(--lime); color: #0d1410; font-family: 'Syne',sans-serif; font-weight: 700; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; padding: 16px 32px; border-radius: 4px; text-decoration: none; transition: opacity .2s, transform .2s; }
+    .grev-btn-main:hover { opacity: .88; transform: translateY(-1px); }
+    .grev-btn-outline { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(168,217,108,.4); color: var(--lime); font-family: 'Syne',sans-serif; font-weight: 700; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; padding: 16px 32px; border-radius: 4px; text-decoration: none; transition: all .2s; }
+    .grev-btn-outline:hover { background: rgba(168,217,108,.08); border-color: var(--lime); }
+    @media (max-width: 900px) { .grev-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 600px) { .grev-wrap { padding: 48px 16px; } .grev-grid { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
   <!-- ══ EASTER EGG ══ -->
@@ -1840,42 +1869,144 @@
 
   <!-- ══ TÉMOIGNAGES ══ -->
   <section id="temoignages">
-    <div class="temo-wrap">
-      <div class="temo-header reveal">
-        <div>
-          <p class="section-tag">Ce qu'ils disent</p>
-          <h2 class="section-h2">AVIS <em>CLIENTS</em></h2>
+    <div class="grev-wrap">
+
+      <div class="grev-header reveal">
+        <p class="section-tag">Ce qu&#39;ils disent</p>
+        <h2 class="section-h2">AVIS <em>GOOGLE</em></h2>
+        <div class="grev-badge">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          <div class="grev-score-num">5,0</div>
+          <div class="grev-stars-badge">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="grev-count-txt">22 avis Google</div>
         </div>
       </div>
 
-      <!-- Zone d'affichage des commentaires -->
-      <div id="commentsDisplay" class="reveal" style="margin-bottom:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
-
-      <!-- Formulaire commentaire -->
-      <div class="comment-box reveal">
-        <h3 class="comment-title">LAISSEZ VOTRE AVIS</h3>
-        <p class="comment-sub">Partagez votre expérience avec Vert'Tige 972 — votre retour est précieux et visible par tous les visiteurs.</p>
-        <form class="comment-form" onsubmit="submitComment(event)">
-          <div>
-            <div class="stars-input" id="starsInput">
-              <button type="button" class="star-btn active" data-v="1">★</button>
-              <button type="button" class="star-btn active" data-v="2">★</button>
-              <button type="button" class="star-btn active" data-v="3">★</button>
-              <button type="button" class="star-btn active" data-v="4">★</button>
-              <button type="button" class="star-btn active" data-v="5">★</button>
-            </div>
+      <div class="grev-grid reveal">
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#2a7a5a">JL</div>
+          <div class="grev-info">
+            <div class="grev-name">Juliette Labyt</div>
+            <div class="grev-date">il y a une semaine</div>
           </div>
-          <div class="cf-row">
-            <div class="f-g"><label class="f-lbl">Prénom &amp; Nom *</label><input id="c-nom" type="text" class="f-in" placeholder="Jean Dupont" required/></div>
-            <div class="f-g"><label class="f-lbl">Commune</label><select id="c-ville" class="f-sel"><option value="">Choisir une commune…</option><option>Sainte-Luce</option><option>Fort-de-France</option><option>Le Lamentin</option><option>Le Robert</option><option>Le François</option><option>Ducos</option><option>Saint-Joseph</option><option>Schoelcher</option><option>Les Trois-Îlets</option><option>Le Diamant</option><option>Rivière-Salée</option><option>Sainte-Anne</option><option>Le Marin</option><option>Le Vauclin</option><option>Rivière-Pilote</option><option>Saint-Esprit</option><option>La Trinité</option><option>Sainte-Marie</option><option>Gros-Morne</option><option>Le Lorrain</option><option>Le Carbet</option><option>Saint-Pierre</option><option>Case-Pilote</option><option>Bellefontaine</option><option>Le Morne-Rouge</option><option>Le Morne-Vert</option><option>Le Prêcheur</option><option>Basse-Pointe</option><option>Le Marigot</option><option>Ajoupa-Bouillon</option><option>Fonds-Saint-Denis</option><option>Grand-Rivière</option><option>Macouba</option><option>Les Anses-d'Arlet</option></select></div>
-          </div>
-          <div class="f-g"><label class="f-lbl">Votre avis *</label><textarea id="c-msg" class="f-ta" placeholder="Décrivez votre expérience avec Vert'Tige 972…" required></textarea></div>
-          <button type="submit" class="btn-comment">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-            Publier mon avis
-          </button>
-        </form>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Emeric a élagué un grand tamarinier, un manguier, un flamboyant et évacué un immense bakoua de notre jardin. Travail rapide, soigné, de bons conseils, respectueux des arbres et de la nature. Il nous a découpé des planches pour faire de l'artisanat avec notre bois. Je recommande sans hésiter.</p>
       </div>
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#7b3a9e">AJ</div>
+          <div class="grev-info">
+            <div class="grev-name">Alexis Joli</div>
+            <div class="grev-date">il y a 4 semaines</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Très beau boulot ! Je travaille avec Vert'Tige Martinique depuis 5 ans ! Les travaux sont propres et ma clientèle est très satisfaite ! Je recommande.</p>
+      </div>
+      <div class="grev-card">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#16a085">SG</div>
+          <div class="grev-info">
+            <div class="grev-name">Sophie GUEHO</div>
+            <div class="grev-date">il y a 4 semaines</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Nous avons effectué l'abattage d'un figuier maudit d'environ 25–30 m de hauteur. C'est un excellent professionnel très sérieux et très qualifié. Je recommande vivement !</p>
+      </div>
+      <div class="grev-card grev-hidden">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#1a5fa8">PE</div>
+          <div class="grev-info">
+            <div class="grev-name">Pascal EUGENE</div>
+            <div class="grev-date">il y a 4 semaines</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Je leur ai confié un chantier important avec de grands arbres et une véritable forêt de bambous. Alors que d'autres prestataires hésitaient, ils ont relevé le défi avec efficacité. Tarifs justes et équipe jeune et sympathique. À recommander.</p>
+      </div>
+      <div class="grev-card grev-hidden">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#c07830">SM</div>
+          <div class="grev-info">
+            <div class="grev-name">Sandrine MONIN</div>
+            <div class="grev-date">il y a 4 semaines</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Il a réalisé 2 chantiers pour nous : nettoyage de hauts cocotiers au dessus d'une toiture et l'élagage d'un grand figuier maudit. Travail soigné et sérieux, en plus d'être très sympathique. Je recommande !</p>
+      </div>
+      <div class="grev-card grev-hidden">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#6d3ab5">EF</div>
+          <div class="grev-info">
+            <div class="grev-name">Eric Fagault</div>
+            <div class="grev-date">il y a 3 semaines</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Très bon travail. J'ai fait appel à cette entreprise plusieurs fois pour l'élagage de vieux Mahoganys, je l'ai également conseillé à mon voisin. Quand nous avons besoin, nous faisons appel à cette entreprise.</p>
+      </div>
+      <div class="grev-card grev-hidden">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#27ae60">OC</div>
+          <div class="grev-info">
+            <div class="grev-name">ocealilou</div>
+            <div class="grev-date">il y a 4 semaines</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">J'avais un cocotier qui menaçait de tomber. Il a été rapide, efficace et propre. Rien à dire à part le recommander à 300 % !</p>
+      </div>
+      <div class="grev-card grev-hidden">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#c0392b">PM</div>
+          <div class="grev-info">
+            <div class="grev-name">pierre-leandre murielle</div>
+            <div class="grev-date">il y a 4 semaines</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Excellent travail 👍👏 très professionnel ! Ravie de constater le sérieux de ce jeune homme, je le recommande vivement 👏 Abattage d'un très grand cocotier trop proche de l'habitation.</p>
+      </div>
+      <div class="grev-card grev-hidden">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#e07b39">JA</div>
+          <div class="grev-info">
+            <div class="grev-name">Jo Anna</div>
+            <div class="grev-date">il y a 3 semaines</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Merci Emeric pour ton super travail. Efficacité, rapidité et propreté !</p>
+      </div>
+      </div>
+
+      <button id="grev-toggle-btn" class="grev-more-btn">
+        <span>&#9662;</span> Voir les 6 autres avis
+      </button>
+
+      <div class="grev-cta reveal">
+        <a href="https://maps.google.com/?cid=16485322727302760309" target="_blank" rel="noopener" class="grev-btn-main">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Voir les 22 avis Google
+        </a>
+        <a href="https://maps.google.com/?cid=16485322727302760309" target="_blank" rel="noopener" class="grev-btn-outline">
+          &#9733; Laisser un avis
+        </a>
+      </div>
+
     </div>
   </section>
 
@@ -2316,65 +2447,6 @@
     }, { threshold: 0.5 });
     document.querySelectorAll('.trust-card').forEach(c => countObs.observe(c));
 
-    // ══ ÉTOILES COMMENTAIRE ══
-    let selectedStars = 5;
-    document.querySelectorAll('.star-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        selectedStars = parseInt(btn.dataset.v);
-        document.querySelectorAll('.star-btn').forEach((b,i) => {
-          b.classList.toggle('active', i < selectedStars);
-        });
-      });
-      btn.addEventListener('mouseenter', () => {
-        const v = parseInt(btn.dataset.v);
-        document.querySelectorAll('.star-btn').forEach((b,i) => {
-          b.style.color = i < v ? '#F5A623' : '';
-        });
-      });
-      btn.addEventListener('mouseleave', () => {
-        document.querySelectorAll('.star-btn').forEach(sb => { sb.style.color=''; });
-      });
-    });
-
-    // ══ COMMENTAIRES LOCAUX ══
-    const STORAGE_KEY = 'verttige972_comments_v1';
-    function getComments() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-      catch(e) { return []; }
-    }
-    function saveComment(c) {
-      const list = getComments();
-      list.unshift(c);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list.slice(0,50)));
-    }
-    function renderComments() {
-      const display = document.getElementById('commentsDisplay');
-      if (!display) return;
-      const list = getComments();
-      if (list.length === 0) {
-        display.style.gridTemplateColumns = '1fr';
-        display.innerHTML = '<p style="color:rgba(200,180,154,.4);font-size:.85rem;font-style:italic;text-align:center;padding:20px 0">Soyez le premier à laisser un avis !<\/p>';
-        return;
-      }
-      display.style.gridTemplateColumns = list.length === 1 ? '1fr' : list.length === 2 ? '1fr 1fr' : 'repeat(3,1fr)';
-      display.innerHTML = list.map(c => `
-        <div class="temo-card">
-          <div class="temo-stars">${'★'.repeat(c.stars)}${'☆'.repeat(5-c.stars)}<\/div>
-          <p class="temo-text">"${c.msg}"<\/p>
-          <div class="temo-author">${c.nom}<\/div>
-          ${c.ville ? '<div class="temo-location">📍 '+c.ville+'<\/div>' : ''}
-          <div style="margin-top:8px;font-size:.6rem;color:rgba(200,180,154,.3);letter-spacing:.1em">${c.date}<\/div>
-        <\/div>
-      `).join('');
-    }
-    function submitComment(e) {
-      e.preventDefault();
-      const nom   = document.getElementById('c-nom').value.trim();
-      const ville = document.getElementById('c-ville').value.trim();
-      const msg   = document.getElementById('c-msg').value.trim();
-      const now   = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
-      saveComment({ nom, ville, msg, stars: selectedStars, date: now });
-      renderComments();
       const btn = e.target.querySelector('.btn-comment');
       btn.textContent = '✓ Avis publié, merci !';
       btn.style.background = 'var(--feuille)'; btn.style.color = 'var(--blanc)';
@@ -2881,6 +2953,23 @@
       });
     }, 800);
 
-  </script>
+  
+    // == Google Reviews toggle ==
+    (function() {
+      var btn = document.getElementById('grev-toggle-btn');
+      if (!btn) return;
+      var hiddenCards = document.querySelectorAll('.grev-hidden');
+      var expanded = false;
+      btn.addEventListener('click', function() {
+        expanded = !expanded;
+        hiddenCards.forEach(function(c) {
+          c.style.display = expanded ? 'flex' : 'none';
+        });
+        btn.innerHTML = expanded
+          ? '<span>&#9652;</span> Voir moins'
+          : '<span>&#9662;</span> Voir les 6 autres avis';
+      });
+    })();
+</script>
 </body>
 </html>
