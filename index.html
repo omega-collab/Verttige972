@@ -2839,8 +2839,8 @@
 
     /* FOOTER 2 — ÉPURÉ 4 COLONNES */
     #footer { background: #0d1410; border-top: 1px solid rgba(168,217,108,.1); padding: 0; }
-    .ft2-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; border-bottom: 1px solid rgba(237,232,223,.06); }
-    .ft2-col { padding: 40px 32px; border-right: 1px solid rgba(237,232,223,.06); display: flex; flex-direction: column; gap: 10px; }
+    .ft2-grid { display: grid !important; grid-template-columns: 1.4fr 1fr 1fr 1fr !important; border-bottom: 1px solid rgba(237,232,223,.06); width: 100%; }
+    .ft2-col { padding: 40px 28px; border-right: 1px solid rgba(237,232,223,.06); display: flex; flex-direction: column; gap: 10px; min-width: 0; }
     .ft2-col:last-child { border-right: none; }
     .ft2-logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
     .ft2-badge { width: 32px; height: 32px; background: var(--lime); color: var(--noir); font-family: 'Bebas Neue',sans-serif; font-size: 1.15rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 4px; }
