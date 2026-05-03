@@ -3979,18 +3979,6 @@
     }, { threshold: 0.5 });
     document.querySelectorAll('.trust-card').forEach(c => countObs.observe(c));
 
-      const btn = e.target.querySelector('.btn-comment');
-      btn.textContent = '✓ Avis publié, merci !';
-      btn.style.background = 'var(--feuille)'; btn.style.color = 'var(--blanc)';
-      setTimeout(() => {
-        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/><\/svg> Publier mon avis';
-        btn.style.background=''; btn.style.color='';
-        e.target.reset();
-        document.querySelectorAll('.star-btn').forEach(b=>b.classList.add('active'));
-        selectedStars=5;
-      }, 3000);
-    }
-    renderComments();
 
     // ══ AVANT/APRÈS CAROUSEL ══
     (function() {
