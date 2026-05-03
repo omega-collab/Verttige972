@@ -4109,6 +4109,30 @@
         if (e.key === 'ArrowLeft') goTo(current - 1);
         if (e.key === 'ArrowRight') goTo(current + 1);
       });
+
+      // Scroll wheel → slide sur desktop
+      var aaSection = document.getElementById('avantapres');
+      if (aaSection) {
+        var wheelCooldown = false;
+        aaSection.addEventListener('wheel', function(e) {
+          var rect = aaSection.getBoundingClientRect();
+          var inView = rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.4;
+          if (!inView) return;
+          if (Math.abs(e.deltaY) < 15) return;
+          if (wheelCooldown) { e.preventDefault(); return; }
+          if (e.deltaY > 0 && current < total - 1) {
+            e.preventDefault();
+            goTo(current + 1);
+            wheelCooldown = true;
+            setTimeout(function() { wheelCooldown = false; }, 650);
+          } else if (e.deltaY < 0 && current > 0) {
+            e.preventDefault();
+            goTo(current - 1);
+            wheelCooldown = true;
+            setTimeout(function() { wheelCooldown = false; }, 650);
+          }
+        }, { passive: false });
+      }
     })();
 
 
