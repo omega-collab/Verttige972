@@ -4110,27 +4110,25 @@
         if (e.key === 'ArrowRight') goTo(current + 1);
       });
 
-      // Scroll wheel → slide sur desktop
+      // Scroll → slide sur desktop (wheel sur window)
       var aaSection = document.getElementById('avantapres');
       if (aaSection) {
-        var wheelCooldown = false;
-        aaSection.addEventListener('wheel', function(e) {
+        var wLocked = false;
+        window.addEventListener('wheel', function(e) {
           var rect = aaSection.getBoundingClientRect();
-          var inView = rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.4;
-          if (!inView) return;
-          if (Math.abs(e.deltaY) < 15) return;
-          if (wheelCooldown) { e.preventDefault(); return; }
-          if (e.deltaY > 0 && current < total - 1) {
-            e.preventDefault();
-            goTo(current + 1);
-            wheelCooldown = true;
-            setTimeout(function() { wheelCooldown = false; }, 650);
-          } else if (e.deltaY < 0 && current > 0) {
-            e.preventDefault();
-            goTo(current - 1);
-            wheelCooldown = true;
-            setTimeout(function() { wheelCooldown = false; }, 650);
-          }
+          var sectionMid = rect.top + rect.height / 2;
+          var vpMid = window.innerHeight / 2;
+          // N'intercepte que quand la section est centrée dans le viewport
+          if (Math.abs(sectionMid - vpMid) > window.innerHeight * 0.45) return;
+          // Aux extrémités → laisse la page défiler normalement
+          if (e.deltaY > 0 && current >= total - 1) return;
+          if (e.deltaY < 0 && current <= 0) return;
+          e.preventDefault();
+          if (wLocked) return;
+          wLocked = true;
+          setTimeout(function() { wLocked = false; }, 700);
+          if (e.deltaY > 0) goTo(current + 1);
+          else goTo(current - 1);
         }, { passive: false });
       }
     })();
