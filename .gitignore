@@ -1,3 +1,36 @@
+# ═══════════════════════════════════════════════════════════════
+#  .gitignore — Vert'Tige 972
+# ═══════════════════════════════════════════════════════════════
+
+# ─── Dossiers Claude Code (skills, agents, logs internes) ────
+.agents/
+.claude/
+.learnings/
+
+# ─── Scratchpads & fichiers temporaires ──────────────────────
 graphify-out/
-_archive/ 
-push_log.txt 
+_archive/
+push_log.txt
+*.tmp
+*.bak
+*.log
+.DS_Store
+Thumbs.db
+
+# ─── Éditeurs ────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*~
+
+# ─── Node/Python (au cas où) ─────────────────────────────────
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ─── Fichiers d'environnement (jamais versionner de secrets) ─
+.env
+.env.local
+.env.*.local
