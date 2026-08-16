@@ -1,0 +1,9 @@
+{
+  "name": "verttige972-site",
+  "version": "1.0.0",
+  "description": "Site vitrine Vert'Tige 972 — arboriste grimpeur Martinique",
+  "private": true,
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
