@@ -1,0 +1,50 @@
+# ═══════════════════════════════════════════════════════════════
+#  Headers HTTP — Vert'Tige 972
+#  Documentation : https://docs.netlify.com/routing/headers/
+# ═══════════════════════════════════════════════════════════════
+
+# ─── Security headers (appliqués partout) ──────────────────────
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(self), microphone=(), camera=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# ─── HTML : cache court + revalidation (ETag renvoie 304) ─────
+/
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/liens/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+# ─── Assets statiques (si ajoutés plus tard) : cache 1 an ─────
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.jpeg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
