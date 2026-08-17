@@ -8,10 +8,14 @@ on:
       - 'scripts/scrape_google_reviews.py'
       - '.github/workflows/test-scrape-reviews.yml'
 
+concurrency:
+  group: scrape-reviews
+  cancel-in-progress: true
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
 
@@ -24,36 +28,35 @@ jobs:
           pip install --quiet playwright==1.48.0
           playwright install --with-deps chromium
 
-      - name: Run scraper
+      - name: Run scraper (hard timeout 3min)
         id: scrape
         continue-on-error: true
         run: |
-          echo "::group::Scraper stderr"
-          python3 scripts/scrape_google_reviews.py > /tmp/reviews.json 2> /tmp/scraper.log
-          echo "::endgroup::"
+          set +e
+          timeout 200 python3 scripts/scrape_google_reviews.py \
+            > /tmp/reviews.json 2> /tmp/scraper.log
+          echo "exit=$?" >> $GITHUB_OUTPUT
 
       - name: Show logs
         if: always()
         run: |
-          echo "─── Scraper stderr ───"
-          cat /tmp/scraper.log 2>&1 | tail -100 || true
+          echo "─── scraper.log (dernières 120 lignes) ───"
+          tail -120 /tmp/scraper.log || echo "(no log)"
           echo ""
-          echo "─── Nb bytes reviews.json ───"
-          wc -c /tmp/reviews.json 2>&1 || true
+          echo "─── reviews.json (500 chars) ───"
+          head -c 500 /tmp/reviews.json 2>/dev/null || echo "(no output)"
           echo ""
-          echo "─── Contenu reviews.json (500 chars) ───"
-          head -c 500 /tmp/reviews.json 2>&1 || true
-          echo ""
+          echo "─── /tmp/scraper-debug ───"
+          ls -la /tmp/scraper-debug/ 2>/dev/null || echo "(no debug dir)"
 
-      - name: Upload debug artifacts
+      - name: Upload debug
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: debug-google
+          name: scraper-debug
           path: |
             /tmp/reviews.json
             /tmp/scraper.log
-            /tmp/debug-google.png
-            /tmp/debug-google.html
+            /tmp/scraper-debug/
           if-no-files-found: warn
           retention-days: 3
