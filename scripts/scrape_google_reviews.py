@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """
-Scraper Google Reviews v3 — Vert'Tige 972.
+Scraper Google Reviews v5 — Vert'Tige 972.
 
-Playwright headless avec BUDGET TEMPS STRICT (90 sec max) et logs
-détaillés à chaque étape pour éviter les hangs silencieux.
+Change de stratégie : au lieu de Google Maps (qui redirige vers un
+feature ID différent), utilise l'URL de Google Search avec ludocid,
+qui ouvre le knowledge panel + fragment #lrd qui déclenche le
+dialogue des avis.
 
-Stratégie :
-1. Naviguer vers Google Maps via CID
-2. Passer le consent cookies au plus vite
-3. Cliquer l'onglet Avis
-4. Scroller pour charger les avis
-5. Extraire — TOUJOURS écrire artefacts debug avant de sortir
+URL cible :
+  https://www.google.com/search?q=Abattage+Elagage+Vert+Tige+Martinique
+  &hl=fr&gl=fr#lrd=0x8c6add01ef4e4deb:0xe4b5e93c13c428b5,1
+
+Fragment #lrd=<feature_id>,1 → ouvre le dialogue "Reviews" au chargement.
 """
 
 import json
@@ -20,14 +21,19 @@ import time
 from pathlib import Path
 from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
 
-CID = "16485322727302760309"
-URL = f"https://maps.google.com/?cid={CID}&hl=fr&gl=fr"
+# URL Search (pas Maps) — même URL que le bouton "Voir 29 avis" du site
+SEARCH_URL = (
+    "https://www.google.com/search"
+    "?q=Abattage+%C3%89lagage+Vert+Tige+Martinique"
+    "&ludocid=16485322727302760309"
+    "&hl=fr&gl=fr"
+    "#lrd=0x8c6add01ef4e4deb:0xe4b5e93c13c428b5,1,,,,"
+)
 
 UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
 
-GLOBAL_TIMEOUT_SEC = 180
-STEP_TIMEOUT_MS   = 10000
+GLOBAL_TIMEOUT_SEC = 150
 DEBUG_DIR = Path("/tmp/scraper-debug")
 DEBUG_DIR.mkdir(exist_ok=True)
 
@@ -37,28 +43,23 @@ def log(msg):
     print(f"[{ts}] {msg}", file=sys.stderr, flush=True)
 
 
-def timeout_handler(signum, frame):
-    log("[!] GLOBAL TIMEOUT hit — sauvegarde debug & exit")
-    sys.exit(3)
-
-
-signal.signal(signal.SIGALRM, timeout_handler)
+signal.signal(signal.SIGALRM, lambda *_: sys.exit(3))
 signal.alarm(GLOBAL_TIMEOUT_SEC)
 
 
 def dump_debug(page, tag):
-    """Screenshot + HTML + URL courante."""
     try:
-        page.screenshot(path=str(DEBUG_DIR / f"{tag}.png"), full_page=True, timeout=5000)
+        page.screenshot(path=str(DEBUG_DIR / f"{tag}.png"),
+                        full_page=True, timeout=5000)
         log(f"  screenshot: {tag}.png")
     except Exception as e:
         log(f"  [!] screenshot fail: {e}")
     try:
         html = page.content()
-        (DEBUG_DIR / f"{tag}.html").write_text(html[:200000], encoding="utf-8")
+        (DEBUG_DIR / f"{tag}.html").write_text(html[:300000], encoding="utf-8")
         log(f"  html: {tag}.html ({len(html)} chars)")
-    except Exception as e:
-        log(f"  [!] html dump fail: {e}")
+    except Exception:
+        pass
     try:
         log(f"  URL: {page.url}")
         log(f"  title: {page.title()}")
@@ -66,36 +67,43 @@ def dump_debug(page, tag):
         pass
 
 
-def try_click(page, selectors, label, wait_ms=3000):
-    """Essaie plusieurs sélecteurs, retourne True au premier qui marche."""
-    for sel in selectors:
-        try:
-            loc = page.locator(sel).first
-            if loc.count() == 0:
-                continue
-            if loc.is_visible(timeout=1500):
-                loc.click(timeout=wait_ms)
-                log(f"  ✓ '{label}' cliqué via {sel!r}")
-                return True
-        except Exception:
-            continue
-    log(f"  ✗ '{label}' — aucun sélecteur ne match")
-    return False
-
-
+# JS d'extraction adapté au dialogue Reviews de Google Search
 EXTRACT_JS = r"""
 () => {
-  const cards = document.querySelectorAll('[data-review-id]');
   const out = [];
+
+  // Sélecteurs possibles pour les cartes review dans le dialogue Google Search
+  const cardSelectors = [
+    'div[data-review-id]',
+    'div.gws-localreviews__general-reviews-block',
+    '.WMbnJf',
+    '.jftiEf',
+  ];
+  let cards = [];
+  for (const sel of cardSelectors) {
+    const found = document.querySelectorAll(sel);
+    if (found.length > 0) { cards = Array.from(found); break; }
+  }
+
   cards.forEach(c => {
-    const id = c.getAttribute('data-review-id');
+    const id = c.getAttribute('data-review-id') || null;
+
+    // Auteur : cherche un lien vers /contrib/ ou un div avec le nom
     let name = null;
-    for (const el of c.querySelectorAll('div.d4r55, .WNxzHc a, button[jsaction*="reviewer"] div')) {
+    const nameEls = c.querySelectorAll(
+      'a.yC3ZMb, div.TSUbDb, .d4r55, a[href*="/contrib/"] span, a[href*="/contrib/"] div'
+    );
+    for (const el of nameEls) {
       const t = (el.innerText || '').trim();
       if (t && t.length < 80) { name = t; break; }
     }
+
+    // Note
     let rating = null;
-    for (const el of c.querySelectorAll('span[role="img"][aria-label], span[aria-label*="/5"]')) {
+    const starEls = c.querySelectorAll(
+      'span[role="img"][aria-label], span[aria-label*="/5"], .Fam1ne'
+    );
+    for (const el of starEls) {
       const lbl = el.getAttribute('aria-label') || '';
       const m = lbl.match(/(\d[\d,\.]*)/);
       if (m && (lbl.includes('étoile') || lbl.includes('star') || lbl.includes('/5'))) {
@@ -103,25 +111,33 @@ EXTRACT_JS = r"""
         break;
       }
     }
+
+    // Texte
     let text = null;
-    for (const el of c.querySelectorAll('span.wiI7pd, .MyEned span, div[data-expandable-section] span')) {
+    for (const el of c.querySelectorAll('span.review-full-text, span.wiI7pd, .Jtu6Td span, .review-snippet')) {
       const t = (el.innerText || '').trim();
       if (t && t.length > 3) { text = t; break; }
     }
+
+    // Date
     let date = null;
-    for (const el of c.querySelectorAll('span.rsqaWe, span.xRkPPb, span.DZSIDd')) {
+    for (const el of c.querySelectorAll('span.dehysf, .rsqaWe, .xRkPPb, .DZSIDd')) {
       const t = (el.innerText || '').trim();
       if (t) { date = t; break; }
     }
-    if (name && rating != null) out.push({ id, name, rating, text, date });
+
+    if (name && rating != null) {
+      out.push({ id, name, rating, text, date });
+    }
   });
+
   return out;
 }
 """
 
 
 def scrape():
-    log(f"URL: {URL}")
+    log(f"URL: {SEARCH_URL}")
     log(f"Budget global: {GLOBAL_TIMEOUT_SEC}s")
 
     with sync_playwright() as p:
@@ -138,115 +154,84 @@ def scrape():
             "Object.defineProperty(navigator,'webdriver',{get:()=>undefined})"
         )
         page = ctx.new_page()
-        page.set_default_timeout(STEP_TIMEOUT_MS)
+        page.set_default_timeout(15000)
 
-        # 1. Navigate
-        log("Étape 1/5 : navigation")
+        log("Étape 1/4 : navigation vers Google Search")
         try:
-            page.goto(URL, wait_until="domcontentloaded", timeout=20000)
+            page.goto(SEARCH_URL, wait_until="domcontentloaded", timeout=25000)
         except PWTimeout:
-            log("  [!] goto timeout (on continue quand même)")
+            log("  [!] goto timeout")
 
-        # Redirect logging
-        page.wait_for_timeout(1500)
+        page.wait_for_timeout(2000)
         log(f"  URL après goto: {page.url}")
 
-        # 2. Cookie consent
-        log("Étape 2/5 : consent cookies")
-        clicked = try_click(page, [
-            'button[aria-label*="Tout accepter"]',
+        # Consent cookies
+        log("Étape 2/4 : consent cookies (Google Search)")
+        for sel in [
             'button:has-text("Tout accepter")',
+            'button[aria-label*="Tout accepter"]',
             'button:has-text("Accept all")',
-            'button[aria-label*="Accept all"]',
-            'form[action*="consent"] button',
-        ], "Cookie accept", wait_ms=3000)
-        if clicked:
-            page.wait_for_timeout(2000)
+            '#L2AGLb',                    # bouton consent Google standard
+            'button[jsname="tWT92d"]',    # variante
+        ]:
+            try:
+                loc = page.locator(sel).first
+                if loc.count() > 0 and loc.is_visible(timeout=1500):
+                    loc.click(timeout=3000)
+                    log(f"  ✓ consent cliqué via {sel!r}")
+                    page.wait_for_timeout(2500)
+                    break
+            except Exception:
+                continue
 
         dump_debug(page, "01-after-consent")
 
-        # 3. Wait for h1
-        log("Étape 3/5 : attente h1")
-        try:
-            page.wait_for_selector("h1", timeout=10000)
-            log(f"  h1: {page.locator('h1').first.inner_text()}")
-        except PWTimeout:
-            log("  [!] pas de h1")
+        # Le fragment #lrd doit déclencher le dialogue reviews.
+        # Attente que quelque chose ressemblant à des reviews apparaisse.
+        log("Étape 3/4 : attente du dialogue reviews")
 
-        # 4. Ouvrir l'onglet Avis DANS le panneau (SANS redirect vers un autre lieu)
-        # On cherche le tab role=tab dans le place panel — plus fiable que aria-label
-        log("Étape 4/5 : ouvrir tab Avis dans le panneau")
-        clicked = False
-        # Priorité 1: role=tab avec texte "Avis"
-        try:
-            tab = page.get_by_role("tab", name="Avis").first
-            if tab.count() > 0 and tab.is_visible(timeout=2000):
-                tab.click(timeout=3000)
-                log("  ✓ tab role='tab' name='Avis' cliqué")
-                clicked = True
-        except Exception as e:
-            log(f"  role=tab Avis: {type(e).__name__}")
+        selectors_to_wait = [
+            'div[data-review-id]',
+            '.gws-localreviews__general-reviews-block',
+            '.WMbnJf',
+            '.review-dialog-list',
+        ]
 
-        # Priorité 2 : bouton avec jsaction reviewChart
-        if not clicked:
-            clicked = try_click(page, [
-                'button[jsaction*="reviewChart.moreReviews"]',
-                'button[jsaction*="pane.rating.moreReviews"]',
-            ], "moreReviews button", wait_ms=3000)
-
-        page.wait_for_timeout(2500)
-        dump_debug(page, "02-after-tab-avis")
-
-        # Vérifie qu'on est TOUJOURS sur le bon lieu (pas de redirect)
-        current_url = page.url
-        if "0x8c6add01ef4e4deb" not in current_url and "verttige" not in current_url.lower() and "vert" not in page.title().lower():
-            log(f"  [!] REDIRECTION détectée vers un autre lieu ! URL={current_url}")
-            # On ne peut plus rien faire d'utile, on retourne back
-            page.go_back()
-            page.wait_for_timeout(2000)
-
-        # 5. Scroll + extract
-        log("Étape 5/5 : scroll & extract")
-        # Attendre au moins une review card
-        try:
-            page.wait_for_selector('[data-review-id]', timeout=8000)
-            log("  ✓ [data-review-id] détecté")
-        except PWTimeout:
-            log("  [!] aucun [data-review-id] visible")
-
-        # Compte initial
-        initial = page.locator('[data-review-id]').count()
-        log(f"  reviews initiales dans DOM: {initial}")
-
-        # Scroll (max 8 fois, arrête si count stable 2 fois)
-        prev = initial
-        stable = 0
-        for i in range(8):
+        found_selector = None
+        for sel in selectors_to_wait:
             try:
-                page.evaluate("""() => {
-                  const feed = document.querySelector('div[role="feed"]') ||
-                               document.querySelector('div.m6QErb.DxyBCb');
-                  if (feed) feed.scrollBy(0, 5000);
-                  else window.scrollBy(0, 5000);
-                }""")
-            except Exception:
-                pass
-            page.wait_for_timeout(1200)
-            cur = page.locator('[data-review-id]').count()
-            log(f"  scroll {i+1}: {cur} reviews")
-            if cur == prev:
-                stable += 1
-                if stable >= 2:
-                    log("  → count stable, arrêt scroll")
-                    break
-            else:
-                stable = 0
-            prev = cur
+                page.wait_for_selector(sel, timeout=6000)
+                found_selector = sel
+                log(f"  ✓ trouvé: {sel!r}")
+                break
+            except PWTimeout:
+                log(f"  ✗ pas trouvé: {sel!r}")
 
-        dump_debug(page, "03-after-scroll")
+        dump_debug(page, "02-after-wait")
 
-        # Extract
-        log("Extraction JS...")
+        # Scroll dans le dialogue si trouvé
+        log("Étape 4/4 : scroll & extract")
+        if found_selector:
+            # Trouve le conteneur scrollable du dialogue
+            try:
+                for i in range(6):
+                    page.evaluate("""() => {
+                      const dialog = document.querySelector('.review-dialog-list, .gws-localreviews__general-reviews-block, div[role="dialog"] div[jscontroller]');
+                      if (dialog) dialog.scrollBy(0, 3000);
+                      else window.scrollBy(0, 2000);
+                    }""")
+                    page.wait_for_timeout(1200)
+                    count = 0
+                    for sel in ['div[data-review-id]', '.WMbnJf', '.jftiEf']:
+                        c = page.locator(sel).count()
+                        if c > count:
+                            count = c
+                    log(f"  scroll {i+1}: {count} cartes visibles")
+            except Exception as e:
+                log(f"  [!] scroll exception: {e}")
+
+        dump_debug(page, "03-final")
+
         reviews = page.evaluate(EXTRACT_JS)
         log(f"→ {len(reviews)} avis extraits")
 
@@ -256,7 +241,7 @@ def scrape():
 
 def main():
     log("=" * 55)
-    log("Vert'Tige — Google Reviews Scraper v3")
+    log("Vert'Tige — Google Reviews Scraper v5 (Search)")
     log("=" * 55)
 
     try:
@@ -269,11 +254,10 @@ def main():
 
     if not reviews:
         log("[FAIL] aucun avis extrait")
-        # Le workflow uploadera quand même /tmp/scraper-debug
         sys.exit(2)
 
     log(f"[OK] {len(reviews)} avis")
-    for r in reviews[:8]:
+    for r in reviews[:10]:
         preview = (r.get('text') or '').replace('\n', ' ')[:70]
         log(f"  · {r['name']} ({r['rating']}★) {r.get('date','?')}: {preview}")
 
