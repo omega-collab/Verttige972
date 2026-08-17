@@ -4822,6 +4822,43 @@
     })();
 
   
+    // == Formatage dynamique des dates relatives ==
+    // Les data-date="YYYY-MM-DD" sur chaque carte sont recalculés à chaque
+    // chargement de page → "il y a 1 jour" devient "il y a 2 jours" demain,
+    // etc. Zéro maintenance manuelle des dates.
+    function formatRelativeFr(isoDate) {
+      if (!isoDate) return null;
+      var d = new Date(isoDate + 'T12:00:00');
+      if (isNaN(d.getTime())) return null;
+      var now = new Date();
+      var diffMs = now - d;
+      var diffDays = Math.floor(diffMs / 86400000);
+      if (diffDays < 0) return "aujourd'hui";
+      if (diffDays === 0) return "aujourd'hui";
+      if (diffDays === 1) return "il y a 1 jour";
+      if (diffDays < 7) return "il y a " + diffDays + " jours";
+      if (diffDays < 14) return "il y a 1 semaine";
+      if (diffDays < 30) return "il y a " + Math.floor(diffDays / 7) + " semaines";
+      // Calcul en mois basé sur année/mois
+      var months = (now.getFullYear() - d.getFullYear()) * 12
+                 + (now.getMonth() - d.getMonth());
+      if (now.getDate() < d.getDate()) months--;
+      if (months < 1) months = 1;
+      if (months === 1) return "il y a 1 mois";
+      if (months < 12) return "il y a " + months + " mois";
+      var years = Math.floor(months / 12);
+      if (years === 1) return "il y a 1 an";
+      return "il y a " + years + " ans";
+    }
+    (function() {
+      document.querySelectorAll('.grev-card[data-date]').forEach(function(card) {
+        var dateEl = card.querySelector('.grev-date');
+        if (!dateEl) return;
+        var txt = formatRelativeFr(card.getAttribute('data-date'));
+        if (txt) dateEl.textContent = txt;
+      });
+    })();
+
     // == Google Reviews toggle + tri ==
     (function() {
       var grid = document.getElementById('grevGrid');
