@@ -2958,6 +2958,12 @@
     .grev-stars-badge { color: #F5A623; font-size: 1rem; letter-spacing: 2px; }
     .grev-count-txt { font-family: 'Syne',sans-serif; font-size: .7rem; color: rgba(237,232,223,.45); letter-spacing: .12em; text-transform: uppercase; }
     .grev-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 24px; }
+    /* ── Sort/filter avis ── */
+    .grev-sort { display: inline-flex; gap: 4px; padding: 4px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 40px; margin-bottom: 22px; flex-wrap: wrap; }
+    .grev-sort-btn { padding: 8px 18px; font-family: 'Syne',sans-serif; font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: transparent; border: none; color: rgba(237,232,223,.55); cursor: pointer; border-radius: 40px; transition: all .2s; }
+    .grev-sort-btn:hover { color: var(--creme); background: rgba(255,255,255,.04); }
+    .grev-sort-btn.active { background: rgba(168,217,108,.14); color: var(--lime); }
+    @media (max-width: 540px) { .grev-sort-btn { padding: 7px 12px; font-size: .62rem; letter-spacing: .08em; } }
     .grev-card { background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 10px; transition: border-color .3s, transform .2s; }
     .grev-card:hover { border-color: rgba(168,217,108,.25); transform: translateY(-2px); }
     .grev-card.grev-hidden { display: none; }
@@ -3407,8 +3413,14 @@
         </div>
       </div>
 
-      <div class="grev-grid reveal">
-      <div class="grev-card">
+      <div class="grev-sort reveal" role="tablist" aria-label="Trier les avis">
+        <button type="button" class="grev-sort-btn active" data-sort="default" role="tab" aria-selected="true">Pertinence</button>
+        <button type="button" class="grev-sort-btn" data-sort="recent" role="tab" aria-selected="false">Plus récent</button>
+        <button type="button" class="grev-sort-btn" data-sort="oldest" role="tab" aria-selected="false">Plus ancien</button>
+      </div>
+
+      <div class="grev-grid reveal" id="grevGrid">
+      <div class="grev-card" data-date="2026-06-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#2a7a5a">JL</div>
           <div class="grev-info">
@@ -3420,7 +3432,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Emeric a élagué un grand tamarinier, un manguier, un flamboyant et évacué un immense bakoua de notre jardin. Travail rapide, soigné, de bons conseils, respectueux des arbres et de la nature. Il nous a découpé des planches pour faire de l'artisanat avec notre bois. Je recommande sans hésiter.</p>
       </div>
-      <div class="grev-card">
+      <div class="grev-card" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#7b3a9e">AJ</div>
           <div class="grev-info">
@@ -3432,7 +3444,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Très beau boulot ! Je travaille avec Vert'Tige Martinique depuis 5 ans ! Les travaux sont propres et ma clientèle est très satisfaite ! Je recommande.</p>
       </div>
-      <div class="grev-card">
+      <div class="grev-card" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#16a085">SG</div>
           <div class="grev-info">
@@ -3444,7 +3456,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Nous avons effectué l'abattage d'un figuier maudit d'environ 25–30 m de hauteur. C'est un excellent professionnel très sérieux et très qualifié. Je recommande vivement !</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#1a5fa8">PE</div>
           <div class="grev-info">
@@ -3456,7 +3468,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Je leur ai confié un chantier important avec de grands arbres et une véritable forêt de bambous. Alors que d'autres prestataires hésitaient, ils ont relevé le défi avec efficacité. Tarifs justes et équipe jeune et sympathique. À recommander.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#c07830">SM</div>
           <div class="grev-info">
@@ -3468,7 +3480,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Il a réalisé 2 chantiers pour nous : nettoyage de hauts cocotiers au dessus d'une toiture et l'élagage d'un grand figuier maudit. Travail soigné et sérieux, en plus d'être très sympathique. Je recommande !</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#6d3ab5">EF</div>
           <div class="grev-info">
@@ -3480,7 +3492,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Très bon travail. J'ai fait appel à cette entreprise plusieurs fois pour l'élagage de vieux Mahoganys, je l'ai également conseillé à mon voisin. Quand nous avons besoin, nous faisons appel à cette entreprise.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#27ae60">OC</div>
           <div class="grev-info">
@@ -3492,7 +3504,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">J'avais un cocotier qui menaçait de tomber. Il a été rapide, efficace et propre. Rien à dire à part le recommander à 300 % !</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-04-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#c0392b">PM</div>
           <div class="grev-info">
@@ -3504,7 +3516,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Excellent travail 👍👏 très professionnel ! Ravie de constater le sérieux de ce jeune homme, je le recommande vivement 👏 Abattage d'un très grand cocotier trop proche de l'habitation.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#e07b39">JA</div>
           <div class="grev-info">
@@ -3516,7 +3528,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Merci Emeric pour ton super travail. Efficacité, rapidité et propreté !</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-07-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#2a7a5a">D</div>
           <div class="grev-info">
@@ -3528,7 +3540,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Je travaille avec la société Vert&#39;Tige par expérience du travail bien fait ! Il atteint les zones où d&#39;autres cherchent des excuses ! Est soucieux des arbres et de la nature.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#3498db">SL</div>
           <div class="grev-info">
@@ -3540,7 +3552,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Super travail, rapide et efficace à 100%. Très professionnel malgré la difficulté (arbre coupé : bois canon) ! Encore un grand merci.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-07-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#e67e22">AP</div>
           <div class="grev-info">
@@ -3552,7 +3564,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Très satisfait de la prestation. Devis, tarifs, réalisation. Le paiement se faisant via un notaire, 2 mois d&#39;attente n&#39;ont jamais entamé la relation.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-06-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#d35400">ST</div>
           <div class="grev-info">
@@ -3564,7 +3576,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Très belle prestation soignée d&#39;Aymeric pour l&#39;élagage de nos Mahoganys centenaires, manguier et Pois doux. Nous recommandons vivement Vert&#39;Tige.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-06-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#9b59b6">AH</div>
           <div class="grev-info">
@@ -3576,7 +3588,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Emeric et son collègue font preuve d&#39;un très grand professionnalisme. Ponctuels et à l&#39;écoute. Je recommande.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#16a085">AC</div>
           <div class="grev-info">
@@ -3588,7 +3600,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Un travail propre et rapide, exécuté par un passionné des arbres et de son travail. Je recommande vivement !</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#e74c3c">LB</div>
           <div class="grev-info">
@@ -3600,7 +3612,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Un jeune très sérieux, travailleur, correct, bien fait. Je recommande au top.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#34495e">SS</div>
           <div class="grev-info">
@@ -3612,7 +3624,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Rapide, efficace, de bons conseils. Je n&#39;hésiterai pas à faire appel à nouveau selon les besoins.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#2980b9">EP</div>
           <div class="grev-info">
@@ -3624,7 +3636,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Sérieux, ponctuel et très bosseur ! Je recommande.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#c0392b">CB</div>
           <div class="grev-info">
@@ -3636,7 +3648,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Emeric est un élagueur confirmé, peu importe la situation et la complexité du travail à réaliser. Je recommande sans problème !</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#7b3a9e">L</div>
           <div class="grev-info">
@@ -3648,7 +3660,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Je suis très satisfaite. Très bon travail, efficace et rapide.</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#27ae60">SD</div>
           <div class="grev-info">
@@ -3660,7 +3672,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Un travail propre et soigné !</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-05-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#f39c12">RY</div>
           <div class="grev-info">
@@ -3672,7 +3684,7 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Boss parmi les boss. Très pro !</p>
       </div>
-      <div class="grev-card grev-hidden">
+      <div class="grev-card grev-hidden" data-date="2026-04-17">
         <div class="grev-card-top">
           <div class="grev-avatar" style="background:#1a5fa8">DV</div>
           <div class="grev-info">
@@ -3684,10 +3696,58 @@
         <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p class="grev-text">Merci Emeric ! Travail au top, professionnel et sérieux.</p>
       </div>
+      <div class="grev-card grev-hidden" data-date="2026-08-16">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#2c3e50">BA</div>
+          <div class="grev-info">
+            <div class="grev-name">Breizh Agencement</div>
+            <div class="grev-date">il y a 1 jour</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Je suis vraiment ravi de la prestation de Vert&#39;Tige Martinique. Très professionnel, sérieux et efficace. Il maîtrise parfaitement son métier : il monte dans les arbres avec aisance et réalise l&#39;abattage et l&#39;élagage en toute sécurité, même dans des situations délicates. On sent tout de suite l&#39;expérience et le savoir-faire. Travail propre et soigné. Je recommande sans hésitation !</p>
+      </div>
+      <div class="grev-card grev-hidden" data-date="2026-08-16">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#a04ac9">AD</div>
+          <div class="grev-info">
+            <div class="grev-name">Ax D</div>
+            <div class="grev-date">il y a 1 jour</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Une demande de prestation pour l&#39;élagage difficile de 2 arbres d&#39;environ 5m placés en bordure de rivière. Un travail sérieux réalisé en moins de 5 heures par des professionnels qui connaissent leur métier. Merci. Je recommande fort !</p>
+      </div>
+      <div class="grev-card grev-hidden" data-date="2026-07-17">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#d35400">AB</div>
+          <div class="grev-info">
+            <div class="grev-name">Alain Blotiere</div>
+            <div class="grev-date">il y a 1 mois</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Emeric est réactif et sérieux ! Il est même intervenu avec un jour d&#39;avance. Travail rapide et soigné. Je suis très satisfaite. N&#39;hésitez pas !</p>
+      </div>
+      <div class="grev-card grev-hidden" data-date="2026-07-17">
+        <div class="grev-card-top">
+          <div class="grev-avatar" style="background:#607d8b">YF</div>
+          <div class="grev-info">
+            <div class="grev-name">Yannick Faurieux</div>
+            <div class="grev-date">il y a 1 mois</div>
+          </div>
+          <svg class="grev-glogo" viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </div>
+        <div class="grev-stars-row">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="grev-text">Excellent travail, propre, net et précis. Je recommande sans réserve le prestataire Vert&#39;Tige pour tous travaux d&#39;abattage et d&#39;élagage. Je suis très satisfait.</p>
+      </div>
       </div>
 
       <button id="grev-toggle-btn" class="grev-more-btn">
-        <span>&#9662;</span> Voir les 20 autres avis
+        <span>&#9662;</span> Voir les 24 autres avis
       </button>
 
       <div class="grev-cta reveal">
@@ -4750,21 +4810,79 @@
     })();
 
   
-    // == Google Reviews toggle ==
+    // == Google Reviews toggle + tri ==
     (function() {
-      var btn = document.getElementById('grev-toggle-btn');
-      if (!btn) return;
-      var hiddenCards = document.querySelectorAll('.grev-hidden');
+      var grid = document.getElementById('grevGrid');
+      var btn  = document.getElementById('grev-toggle-btn');
+      if (!grid) return;
+
+      // Sauvegarde de l'ordre initial ("pertinence") pour pouvoir y revenir
+      var originalOrder = Array.prototype.slice.call(grid.children);
+      var currentSort = 'default';
       var expanded = false;
-      btn.addEventListener('click', function() {
-        expanded = !expanded;
-        hiddenCards.forEach(function(c) {
-          c.style.display = expanded ? 'flex' : 'none';
+
+      function applySort(mode) {
+        currentSort = mode;
+        var cards = Array.prototype.slice.call(grid.children);
+
+        if (mode === 'default') {
+          // Ordre initial + comportement toggle (3 visibles + reste caché)
+          originalOrder.forEach(function(c) { grid.appendChild(c); });
+          cards.forEach(function(c, i) {
+            if (i < 3) c.classList.remove('grev-hidden');
+            else {
+              if (expanded) c.classList.remove('grev-hidden');
+              else c.classList.add('grev-hidden');
+            }
+            c.style.display = '';
+          });
+          if (btn) btn.style.display = '';
+        } else {
+          // Tri par date : on affiche TOUT et on cache le bouton toggle
+          cards.sort(function(a, b) {
+            var da = a.getAttribute('data-date') || '';
+            var db = b.getAttribute('data-date') || '';
+            return mode === 'recent' ? db.localeCompare(da) : da.localeCompare(db);
+          });
+          cards.forEach(function(c) { grid.appendChild(c); });
+          cards.forEach(function(c) {
+            c.classList.remove('grev-hidden');
+            c.style.display = '';
+          });
+          if (btn) btn.style.display = 'none';
+        }
+      }
+
+      // Handlers boutons tri
+      document.querySelectorAll('.grev-sort-btn').forEach(function(b) {
+        b.addEventListener('click', function() {
+          document.querySelectorAll('.grev-sort-btn').forEach(function(x) {
+            x.classList.remove('active');
+            x.setAttribute('aria-selected', 'false');
+          });
+          b.classList.add('active');
+          b.setAttribute('aria-selected', 'true');
+          applySort(b.getAttribute('data-sort'));
         });
-        btn.innerHTML = expanded
-          ? '<span>&#9652;</span> Voir moins'
-          : '<span>&#9662;</span> Voir les 20 autres avis';
       });
+
+      // Toggle "Voir 24 autres avis" (uniquement en mode Pertinence)
+      if (btn) {
+        btn.addEventListener('click', function() {
+          expanded = !expanded;
+          document.querySelectorAll('.grev-card').forEach(function(c, i) {
+            if (i < 3) return;
+            if (expanded) c.classList.remove('grev-hidden');
+            else c.classList.add('grev-hidden');
+          });
+          btn.innerHTML = expanded
+            ? '<span>&#9652;</span> Voir moins'
+            : '<span>&#9662;</span> Voir les 24 autres avis';
+        });
+      }
+
+      // Init : mode par défaut
+      applySort('default');
     })();
 </script>
 
