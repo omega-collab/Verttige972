@@ -1,300 +1,269 @@
 #!/usr/bin/env python3
 """
-Scraper Google Reviews (Playwright) — Vert'Tige 972.
+Scraper Google Reviews v3 — Vert'Tige 972.
 
-Approche : lance Chromium headless, ouvre la fiche Google Maps du lieu,
-clique sur l'onglet Avis, trie par date récente, scroll pour charger
-tous les avis, extrait du DOM.
+Playwright headless avec BUDGET TEMPS STRICT (90 sec max) et logs
+détaillés à chaque étape pour éviter les hangs silencieux.
 
-CID Vert'Tige : 16485322727302760309
-URL directe : https://maps.google.com/?cid=<CID>&hl=fr&gl=fr
+Stratégie :
+1. Naviguer vers Google Maps via CID
+2. Passer le consent cookies au plus vite
+3. Cliquer l'onglet Avis
+4. Scroller pour charger les avis
+5. Extraire — TOUJOURS écrire artefacts debug avant de sortir
 """
 
 import json
-import re
+import signal
 import sys
 import time
 from pathlib import Path
-
-from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
+from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
 
 CID = "16485322727302760309"
 URL = f"https://maps.google.com/?cid={CID}&hl=fr&gl=fr"
 
-UA = (
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-)
+UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
 
-MAX_SCROLLS = 30      # combien de fois on scroll pour charger de nouveaux avis
-SCROLL_PAUSE = 1.2    # secondes entre chaque scroll
+GLOBAL_TIMEOUT_SEC = 180
+STEP_TIMEOUT_MS   = 10000
+DEBUG_DIR = Path("/tmp/scraper-debug")
+DEBUG_DIR.mkdir(exist_ok=True)
 
 
 def log(msg):
-    print(f"[scraper] {msg}", file=sys.stderr, flush=True)
+    ts = time.strftime("%H:%M:%S")
+    print(f"[{ts}] {msg}", file=sys.stderr, flush=True)
 
 
-def try_accept_cookies(page):
-    """Google affiche une popup de consentement cookies au premier chargement."""
-    selectors = [
-        'button:has-text("Tout accepter")',
-        'button:has-text("Accept all")',
-        'button[aria-label*="Accepter tout"]',
-        'button[aria-label*="Accept all"]',
-        'form[action*="consent"] button:nth-child(2)',
-    ]
-    for sel in selectors:
-        try:
-            btn = page.locator(sel).first
-            if btn.is_visible(timeout=2000):
-                btn.click()
-                log(f"Cookies acceptés via '{sel}'")
-                page.wait_for_timeout(1500)
-                return True
-        except PlaywrightTimeout:
-            continue
-        except Exception:
-            continue
-    log("Aucune popup cookies détectée (ou déjà passée)")
-    return False
+def timeout_handler(signum, frame):
+    log("[!] GLOBAL TIMEOUT hit — sauvegarde debug & exit")
+    sys.exit(3)
 
 
-def click_reviews_tab(page):
-    """Clique sur l'onglet Avis / bouton 'Voir tous les avis'."""
-    selectors = [
-        'button[aria-label*="Avis pour"]',
-        'button[aria-label*="Reviews for"]',
-        'button[jsaction*="reviewChart"]',
-        'button:has-text("avis")',
-        'button:has-text("reviews")',
-        'a:has-text("Voir tous les avis")',
-    ]
-    for sel in selectors:
-        try:
-            btn = page.locator(sel).first
-            if btn.is_visible(timeout=3000):
-                btn.click()
-                log(f"Onglet avis ouvert via '{sel}'")
-                page.wait_for_timeout(2000)
-                return True
-        except Exception:
-            continue
-    log("[!] Onglet avis non trouvé — peut-être déjà sur la page reviews")
-    return False
+signal.signal(signal.SIGALRM, timeout_handler)
+signal.alarm(GLOBAL_TIMEOUT_SEC)
 
 
-def sort_by_newest(page):
-    """Tente de trier les avis par 'Les plus récents'."""
+def dump_debug(page, tag):
+    """Screenshot + HTML + URL courante."""
     try:
-        # Bouton de tri (souvent 'Les plus pertinents' par défaut)
-        sort_btn = page.locator('button[aria-label*="Trier"], button:has-text("Trier"), button:has-text("Sort")').first
-        sort_btn.click(timeout=5000)
-        page.wait_for_timeout(800)
-
-        # Option "Les plus récents"
-        newest = page.locator('div[role="menuitemradio"]:has-text("récents"), div[role="menuitem"]:has-text("récents"), div:has-text("Les plus récents")').first
-        newest.click(timeout=3000)
-        log("Tri par plus récents appliqué")
-        page.wait_for_timeout(2000)
-        return True
+        page.screenshot(path=str(DEBUG_DIR / f"{tag}.png"), full_page=True, timeout=5000)
+        log(f"  screenshot: {tag}.png")
     except Exception as e:
-        log(f"[!] Tri non appliqué: {e}")
-        return False
+        log(f"  [!] screenshot fail: {e}")
+    try:
+        html = page.content()
+        (DEBUG_DIR / f"{tag}.html").write_text(html[:200000], encoding="utf-8")
+        log(f"  html: {tag}.html ({len(html)} chars)")
+    except Exception as e:
+        log(f"  [!] html dump fail: {e}")
+    try:
+        log(f"  URL: {page.url}")
+        log(f"  title: {page.title()}")
+    except Exception:
+        pass
 
 
-def find_scrollable_feed(page):
-    """Trouve le conteneur scrollable des avis."""
-    candidates = [
-        'div[role="feed"]',
-        'div.m6QErb.DxyBCb.kA9KIf',
-        'div.review-dialog-list',
-    ]
-    for sel in candidates:
+def try_click(page, selectors, label, wait_ms=3000):
+    """Essaie plusieurs sélecteurs, retourne True au premier qui marche."""
+    for sel in selectors:
         try:
-            el = page.locator(sel).first
-            if el.count() > 0:
-                return el
+            loc = page.locator(sel).first
+            if loc.count() == 0:
+                continue
+            if loc.is_visible(timeout=1500):
+                loc.click(timeout=wait_ms)
+                log(f"  ✓ '{label}' cliqué via {sel!r}")
+                return True
         except Exception:
             continue
-    return None
+    log(f"  ✗ '{label}' — aucun sélecteur ne match")
+    return False
 
 
-def scroll_reviews(page, max_scrolls=MAX_SCROLLS):
-    """Scroll le conteneur d'avis pour déclencher le lazy load."""
-    scrollable = find_scrollable_feed(page)
-    if not scrollable:
-        log("[!] Conteneur scrollable non trouvé — fallback scroll page")
-        for i in range(max_scrolls):
-            page.mouse.wheel(0, 3000)
-            page.wait_for_timeout(int(SCROLL_PAUSE * 1000))
-        return
-
-    prev_count = 0
-    stable = 0
-    for i in range(max_scrolls):
-        try:
-            scrollable.evaluate('el => el.scrollBy(0, 3000)')
-        except Exception:
-            page.mouse.wheel(0, 3000)
-        page.wait_for_timeout(int(SCROLL_PAUSE * 1000))
-
-        try:
-            count = page.locator('[data-review-id]').count()
-        except Exception:
-            count = 0
-        log(f"Scroll {i+1}/{max_scrolls} — {count} cartes visibles")
-
-        if count == prev_count:
-            stable += 1
-            if stable >= 3:
-                log("Plus de nouveaux avis chargés — arrêt du scroll")
-                break
-        else:
-            stable = 0
-        prev_count = count
-
-
-EXTRACT_JS = """
+EXTRACT_JS = r"""
 () => {
   const cards = document.querySelectorAll('[data-review-id]');
-  return Array.from(cards).map(c => {
+  const out = [];
+  cards.forEach(c => {
     const id = c.getAttribute('data-review-id');
-
-    // Auteur
     let name = null;
-    const nameEls = c.querySelectorAll('div.d4r55, .WNxzHc a, button[jsaction*="reviewerLink"] div');
-    for (const el of nameEls) {
+    for (const el of c.querySelectorAll('div.d4r55, .WNxzHc a, button[jsaction*="reviewer"] div')) {
       const t = (el.innerText || '').trim();
       if (t && t.length < 80) { name = t; break; }
     }
-
-    // Note (via aria-label des étoiles)
     let rating = null;
-    const starEls = c.querySelectorAll('span[role="img"][aria-label*="étoile"], span[role="img"][aria-label*="star"], span[aria-label*="/5"]');
-    for (const el of starEls) {
-      const label = el.getAttribute('aria-label') || '';
-      const m = label.match(/(\\d[\\d,\\.]*)/);
-      if (m) { rating = parseFloat(m[1].replace(',', '.')); break; }
+    for (const el of c.querySelectorAll('span[role="img"][aria-label], span[aria-label*="/5"]')) {
+      const lbl = el.getAttribute('aria-label') || '';
+      const m = lbl.match(/(\d[\d,\.]*)/);
+      if (m && (lbl.includes('étoile') || lbl.includes('star') || lbl.includes('/5'))) {
+        rating = parseFloat(m[1].replace(',', '.'));
+        break;
+      }
     }
-
-    // Texte de l'avis
     let text = null;
-    const textEls = c.querySelectorAll('span.wiI7pd, div[data-expandable-section] span, .MyEned span');
-    for (const el of textEls) {
+    for (const el of c.querySelectorAll('span.wiI7pd, .MyEned span, div[data-expandable-section] span')) {
       const t = (el.innerText || '').trim();
-      if (t && t.length > 5) { text = t; break; }
+      if (t && t.length > 3) { text = t; break; }
     }
-
-    // Date relative
     let date = null;
-    const dateEls = c.querySelectorAll('span.rsqaWe, span.xRkPPb, span.DZSIDd');
-    for (const el of dateEls) {
+    for (const el of c.querySelectorAll('span.rsqaWe, span.xRkPPb, span.DZSIDd')) {
       const t = (el.innerText || '').trim();
       if (t) { date = t; break; }
     }
-
-    return { id, name, rating, text, date };
-  }).filter(r => r.name && r.rating != null);
+    if (name && rating != null) out.push({ id, name, rating, text, date });
+  });
+  return out;
 }
 """
 
 
 def scrape():
-    log(f"Cible: {URL}")
+    log(f"URL: {URL}")
+    log(f"Budget global: {GLOBAL_TIMEOUT_SEC}s")
+
     with sync_playwright() as p:
         browser = p.chromium.launch(
             headless=True,
-            args=[
-                "--disable-blink-features=AutomationControlled",
-                "--no-sandbox",
-                "--disable-dev-shm-usage",
-            ],
+            args=["--disable-blink-features=AutomationControlled",
+                  "--no-sandbox", "--disable-dev-shm-usage"],
         )
-        context = browser.new_context(
-            user_agent=UA,
-            locale="fr-FR",
-            timezone_id="Europe/Paris",
+        ctx = browser.new_context(
+            user_agent=UA, locale="fr-FR", timezone_id="Europe/Paris",
             viewport={"width": 1400, "height": 900},
         )
-        # Cache la propriété webdriver (basique anti-detection)
-        context.add_init_script("""
-            Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-        """)
+        ctx.add_init_script(
+            "Object.defineProperty(navigator,'webdriver',{get:()=>undefined})"
+        )
+        page = ctx.new_page()
+        page.set_default_timeout(STEP_TIMEOUT_MS)
 
-        page = context.new_page()
-
+        # 1. Navigate
+        log("Étape 1/5 : navigation")
         try:
-            page.goto(URL, wait_until="domcontentloaded", timeout=45000)
-        except PlaywrightTimeout:
-            log("[!] Timeout navigation initiale")
+            page.goto(URL, wait_until="domcontentloaded", timeout=20000)
+        except PWTimeout:
+            log("  [!] goto timeout (on continue quand même)")
 
-        page.wait_for_timeout(2000)
-        try_accept_cookies(page)
+        # Redirect logging
+        page.wait_for_timeout(1500)
+        log(f"  URL après goto: {page.url}")
 
-        # Attendre le chargement de la fiche
+        # 2. Cookie consent
+        log("Étape 2/5 : consent cookies")
+        clicked = try_click(page, [
+            'button[aria-label*="Tout accepter"]',
+            'button:has-text("Tout accepter")',
+            'button:has-text("Accept all")',
+            'button[aria-label*="Accept all"]',
+            'form[action*="consent"] button',
+        ], "Cookie accept", wait_ms=3000)
+        if clicked:
+            page.wait_for_timeout(2000)
+
+        dump_debug(page, "01-after-consent")
+
+        # 3. Wait for h1
+        log("Étape 3/5 : attente h1")
         try:
-            page.wait_for_selector('h1', timeout=15000)
-            title = page.locator('h1').first.inner_text()
-            log(f"Fiche chargée: {title}")
-        except Exception:
-            log("[!] h1 pas trouvé")
+            page.wait_for_selector("h1", timeout=10000)
+            log(f"  h1: {page.locator('h1').first.inner_text()}")
+        except PWTimeout:
+            log("  [!] pas de h1")
 
-        # Dump URL courante pour debug
-        log(f"URL actuelle: {page.url}")
+        # 4. Try clicking reviews tab
+        log("Étape 4/5 : ouvrir onglet avis")
+        try_click(page, [
+            'button[jsaction*="reviewChart"]',
+            'button[aria-label*="Avis"]',
+            'button[aria-label*="avis"]',
+            'button[aria-label*="Reviews"]',
+            'button:has-text("avis")',
+            'a[href*="reviews"]',
+        ], "Onglet avis", wait_ms=3000)
+        page.wait_for_timeout(2500)
 
-        click_reviews_tab(page)
-        sort_by_newest(page)
+        dump_debug(page, "02-after-reviews-click")
 
-        # Attendre au moins une review
+        # 5. Scroll + extract
+        log("Étape 5/5 : scroll & extract")
+        # Attendre au moins une review card
         try:
-            page.wait_for_selector('[data-review-id]', timeout=15000)
-        except PlaywrightTimeout:
-            log("[!] Aucune review-id détectée dans le DOM après clic")
+            page.wait_for_selector('[data-review-id]', timeout=8000)
+            log("  ✓ [data-review-id] détecté")
+        except PWTimeout:
+            log("  [!] aucun [data-review-id] visible")
 
-        scroll_reviews(page)
+        # Compte initial
+        initial = page.locator('[data-review-id]').count()
+        log(f"  reviews initiales dans DOM: {initial}")
 
+        # Scroll (max 8 fois, arrête si count stable 2 fois)
+        prev = initial
+        stable = 0
+        for i in range(8):
+            try:
+                page.evaluate("""() => {
+                  const feed = document.querySelector('div[role="feed"]') ||
+                               document.querySelector('div.m6QErb.DxyBCb');
+                  if (feed) feed.scrollBy(0, 5000);
+                  else window.scrollBy(0, 5000);
+                }""")
+            except Exception:
+                pass
+            page.wait_for_timeout(1200)
+            cur = page.locator('[data-review-id]').count()
+            log(f"  scroll {i+1}: {cur} reviews")
+            if cur == prev:
+                stable += 1
+                if stable >= 2:
+                    log("  → count stable, arrêt scroll")
+                    break
+            else:
+                stable = 0
+            prev = cur
+
+        dump_debug(page, "03-after-scroll")
+
+        # Extract
+        log("Extraction JS...")
         reviews = page.evaluate(EXTRACT_JS)
-        log(f"Reviews extraites: {len(reviews)}")
-
-        # Screenshot debug si peu/pas d'avis
-        if len(reviews) < 3:
-            page.screenshot(path="/tmp/debug-google.png", full_page=True)
-            log("Screenshot debug écrit /tmp/debug-google.png")
-            # Dump un extrait du HTML aussi
-            html = page.content()[:5000]
-            Path("/tmp/debug-google.html").write_text(html, encoding="utf-8")
+        log(f"→ {len(reviews)} avis extraits")
 
         browser.close()
         return reviews
 
 
 def main():
-    print("=" * 60, file=sys.stderr)
-    print("Vert'Tige — Google Reviews Playwright Scraper", file=sys.stderr)
-    print("=" * 60, file=sys.stderr)
+    log("=" * 55)
+    log("Vert'Tige — Google Reviews Scraper v3")
+    log("=" * 55)
 
     try:
         reviews = scrape()
+    except SystemExit:
+        raise
     except Exception as e:
         log(f"[FATAL] {type(e).__name__}: {e}")
         sys.exit(1)
 
     if not reviews:
-        log("[FAIL] Aucun avis extrait")
+        log("[FAIL] aucun avis extrait")
+        # Le workflow uploadera quand même /tmp/scraper-debug
         sys.exit(2)
 
-    # Écriture
+    log(f"[OK] {len(reviews)} avis")
+    for r in reviews[:8]:
+        preview = (r.get('text') or '').replace('\n', ' ')[:70]
+        log(f"  · {r['name']} ({r['rating']}★) {r.get('date','?')}: {preview}")
+
     out_dir = Path(__file__).resolve().parent.parent / "data"
     out_dir.mkdir(exist_ok=True)
-    out_file = out_dir / "reviews-google-raw.json"
-    out_file.write_text(json.dumps(reviews, ensure_ascii=False, indent=2), encoding="utf-8")
-
-    log(f"[OK] {len(reviews)} avis écrits dans {out_file}")
-    for r in reviews[:10]:
-        text_preview = (r.get('text') or '')[:60].replace('\n', ' ')
-        log(f"  · {r['name']} ({r['rating']}★) {r.get('date') or '?'}: {text_preview}...")
-
-    # Aussi sur stdout
+    (out_dir / "reviews-google-raw.json").write_text(
+        json.dumps(reviews, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
     print(json.dumps(reviews, ensure_ascii=False, indent=2))
 
 
