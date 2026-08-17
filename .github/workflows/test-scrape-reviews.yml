@@ -1,0 +1,33 @@
+name: Test scraper Google Reviews
+
+# Déclenché manuellement uniquement — Phase 1 de test
+on:
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run scraper
+        id: scrape
+        run: |
+          echo "::group::Scraper output"
+          python3 scripts/scrape_google_reviews.py
+          echo "::endgroup::"
+
+      - name: Show extracted data
+        if: always()
+        run: |
+          echo "─── Fichier généré ───"
+          ls -la data/ 2>&1 || echo "Pas de dossier data/"
+          echo ""
+          echo "─── Contenu reviews-google-raw.json ───"
+          cat data/reviews-google-raw.json 2>&1 | head -100 || echo "(fichier absent)"
