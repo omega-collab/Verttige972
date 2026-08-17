@@ -19,14 +19,7 @@
   <link rel="manifest" href="/site.webmanifest"/>
   <meta name="theme-color" content="#A8D96C"/>
 
-  <!-- ─── Contentsquare (analytics + heatmaps) — tag ID 956c70ee9f240 ─── -->
-  <script>
-  (function(c,s,q,u,a,r,e){
-    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-    e=s.createElement(q);e.async=1;e.src=u;
-    r=s.getElementsByTagName(q)[0];r.parentNode.insertBefore(e,r);
-  })(window,document,'script','https://t.contentsquare.net/uxa/956c70ee9f240.js','_uxa');
-  </script>
+  <!-- Contentsquare chargé conditionnellement après consentement cookies (voir CookieConsent JS en bas de page) -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -3880,6 +3873,7 @@
         <a href="#temoignages" class="ft2-link">Avis</a>
         <a href="#faq" class="ft2-link">FAQ</a>
         <a href="#contact" class="ft2-link">Contact</a>
+        <a href="#" class="ft2-link" onclick="event.preventDefault(); window.CookieConsent && window.CookieConsent.reopen(); return false;">Gérer les cookies</a>
       </div>
 
       <!-- COL 3 — Contact -->
@@ -4826,6 +4820,228 @@
       }
     })();
   </script>
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     BANDEAU COOKIES RGPD / CNIL — conforme guidelines 2020
+     - Refuser aussi facile qu'accepter (même style / poids visuel)
+     - Cookies analytics BLOQUÉS par défaut jusqu'au consentement
+     - Choix persisté 13 mois (max CNIL)
+     - Bouton "Gérer les cookies" dans le footer pour rouvrir
+═══════════════════════════════════════════════════════════════ -->
+<style>
+  .cc-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    max-width: 560px;
+    margin: 0 auto;
+    background: rgba(13, 18, 16, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(168, 217, 108, 0.3);
+    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(168, 217, 108, 0.1);
+    padding: 22px 24px 20px;
+    z-index: 999999;
+    font-family: 'Barlow', sans-serif;
+    color: var(--creme, #ede8df);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity .4s ease, transform .4s ease;
+    pointer-events: none;
+    border-radius: 4px;
+  }
+  .cc-banner.cc-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .cc-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .cc-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(168, 217, 108, 0.15);
+    border: 1px solid rgba(168, 217, 108, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+  .cc-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: .04em;
+    color: var(--lime, #A8D96C);
+    line-height: 1;
+  }
+  .cc-text {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: rgba(237, 232, 223, 0.85);
+    margin-bottom: 16px;
+  }
+  .cc-text a {
+    color: var(--lime, #A8D96C);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(168, 217, 108, 0.3);
+  }
+  .cc-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .cc-btn {
+    flex: 1 1 45%;
+    padding: 12px 18px;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    transition: transform .15s ease, background .2s, color .2s;
+    border-radius: 2px;
+    min-height: 44px;
+  }
+  .cc-btn:hover { transform: translateY(-1px); }
+  .cc-btn:active { transform: translateY(0); }
+  .cc-refuse {
+    background: transparent;
+    border: 1px solid rgba(237, 232, 223, 0.35);
+    color: rgba(237, 232, 223, 0.85);
+  }
+  .cc-refuse:hover {
+    border-color: rgba(237, 232, 223, 0.6);
+    color: #fff;
+  }
+  .cc-accept {
+    background: var(--lime, #A8D96C);
+    color: #0d1210;
+    font-weight: 800;
+  }
+  .cc-accept:hover {
+    background: #b8e57a;
+  }
+  @media (max-width: 540px) {
+    .cc-banner {
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      padding: 18px 18px 16px;
+    }
+    .cc-title { font-size: 1.05rem; }
+    .cc-text { font-size: 0.78rem; }
+    .cc-btn { font-size: 0.66rem; padding: 12px 14px; letter-spacing: .1em; }
+  }
+</style>
+
+<div class="cc-banner" id="ccBanner" role="dialog" aria-live="polite" aria-label="Consentement cookies">
+  <div class="cc-head">
+    <span class="cc-icon">🍪</span>
+    <span class="cc-title">Cookies</span>
+  </div>
+  <p class="cc-text">
+    Ce site utilise des cookies d'analyse (Contentsquare) pour comprendre comment vous utilisez le site et l'améliorer. Ils ne seront activés qu'avec votre accord — votre choix est modifiable à tout moment via <em>Gérer les cookies</em> en bas de page.
+  </p>
+  <div class="cc-actions">
+    <button type="button" class="cc-btn cc-refuse" onclick="window.CookieConsent.refuse()">Refuser</button>
+    <button type="button" class="cc-btn cc-accept" onclick="window.CookieConsent.accept()">Accepter</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  var KEY = 'vt972-consent';
+  var MAX_AGE_MS = 13 * 30 * 24 * 60 * 60 * 1000;  // 13 mois (max CNIL)
+  var CS_TAG_ID = '956c70ee9f240';
+  var loaded = false;
+
+  function loadContentsquare() {
+    if (loaded) return;
+    loaded = true;
+    (function(c,s,q,u,a,r,e){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      e=s.createElement(q);e.async=1;e.src=u;
+      r=s.getElementsByTagName(q)[0];r.parentNode.insertBefore(e,r);
+    })(window,document,'script','https://t.contentsquare.net/uxa/'+CS_TAG_ID+'.js','_uxa');
+  }
+
+  function getStored() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return null;
+      var data = JSON.parse(raw);
+      if (!data || !data.ts) return null;
+      if (Date.now() - data.ts > MAX_AGE_MS) {
+        localStorage.removeItem(KEY);
+        return null;
+      }
+      return data;
+    } catch(e) { return null; }
+  }
+
+  function store(choice) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({ choice: choice, ts: Date.now() }));
+    } catch(e) {}
+  }
+
+  function showBanner() {
+    var el = document.getElementById('ccBanner');
+    if (el) requestAnimationFrame(function() { el.classList.add('cc-visible'); });
+  }
+
+  function hideBanner() {
+    var el = document.getElementById('ccBanner');
+    if (el) el.classList.remove('cc-visible');
+  }
+
+  window.CookieConsent = {
+    accept: function() {
+      store('accept');
+      hideBanner();
+      loadContentsquare();
+    },
+    refuse: function() {
+      store('refuse');
+      hideBanner();
+    },
+    reopen: function() {
+      // Remet le choix à zéro pour reproposer
+      try { localStorage.removeItem(KEY); } catch(e) {}
+      showBanner();
+    }
+  };
+
+  // Init au chargement
+  function init() {
+    var stored = getStored();
+    if (!stored) {
+      // Aucun choix → afficher bandeau
+      setTimeout(showBanner, 600);
+    } else if (stored.choice === 'accept') {
+      // Choix accepté précédemment → charger direct
+      loadContentsquare();
+    }
+    // Si 'refuse' → rien ne se passe (tag non chargé)
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
 
 </body>
 </html>
