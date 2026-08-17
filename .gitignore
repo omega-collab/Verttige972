@@ -7,6 +7,10 @@
 .claude/
 .learnings/
 
+# ─── Contentsquare wizard verifier ───────────────────────────
+.cs-wizard/
+node_modules/
+
 # ─── Scratchpads & fichiers temporaires ──────────────────────
 graphify-out/
 _archive/
