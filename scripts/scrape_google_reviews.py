@@ -173,19 +173,37 @@ def scrape():
         except PWTimeout:
             log("  [!] pas de h1")
 
-        # 4. Try clicking reviews tab
-        log("Étape 4/5 : ouvrir onglet avis")
-        try_click(page, [
-            'button[jsaction*="reviewChart"]',
-            'button[aria-label*="Avis"]',
-            'button[aria-label*="avis"]',
-            'button[aria-label*="Reviews"]',
-            'button:has-text("avis")',
-            'a[href*="reviews"]',
-        ], "Onglet avis", wait_ms=3000)
-        page.wait_for_timeout(2500)
+        # 4. Ouvrir l'onglet Avis DANS le panneau (SANS redirect vers un autre lieu)
+        # On cherche le tab role=tab dans le place panel — plus fiable que aria-label
+        log("Étape 4/5 : ouvrir tab Avis dans le panneau")
+        clicked = False
+        # Priorité 1: role=tab avec texte "Avis"
+        try:
+            tab = page.get_by_role("tab", name="Avis").first
+            if tab.count() > 0 and tab.is_visible(timeout=2000):
+                tab.click(timeout=3000)
+                log("  ✓ tab role='tab' name='Avis' cliqué")
+                clicked = True
+        except Exception as e:
+            log(f"  role=tab Avis: {type(e).__name__}")
 
-        dump_debug(page, "02-after-reviews-click")
+        # Priorité 2 : bouton avec jsaction reviewChart
+        if not clicked:
+            clicked = try_click(page, [
+                'button[jsaction*="reviewChart.moreReviews"]',
+                'button[jsaction*="pane.rating.moreReviews"]',
+            ], "moreReviews button", wait_ms=3000)
+
+        page.wait_for_timeout(2500)
+        dump_debug(page, "02-after-tab-avis")
+
+        # Vérifie qu'on est TOUJOURS sur le bon lieu (pas de redirect)
+        current_url = page.url
+        if "0x8c6add01ef4e4deb" not in current_url and "verttige" not in current_url.lower() and "vert" not in page.title().lower():
+            log(f"  [!] REDIRECTION détectée vers un autre lieu ! URL={current_url}")
+            # On ne peut plus rien faire d'utile, on retourne back
+            page.go_back()
+            page.wait_for_timeout(2000)
 
         # 5. Scroll + extract
         log("Étape 5/5 : scroll & extract")
