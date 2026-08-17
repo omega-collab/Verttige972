@@ -1,8 +1,13 @@
 name: Test scraper Google Reviews
 
-# Déclenché manuellement uniquement — Phase 1 de test
+# Phase 1 : trigger sur push du script ou du workflow lui-même
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/scrape_google_reviews.py'
+      - '.github/workflows/test-scrape-reviews.yml'
 
 jobs:
   scrape:
