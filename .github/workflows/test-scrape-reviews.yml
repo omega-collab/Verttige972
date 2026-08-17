@@ -1,6 +1,5 @@
-name: Test scraper Google Reviews
+name: Scrape Google Reviews (Playwright)
 
-# Phase 1 : trigger sur push du script ou du workflow lui-même
 on:
   workflow_dispatch:
   push:
@@ -12,27 +11,49 @@ on:
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
+      - name: Install Playwright + Chromium
+        run: |
+          pip install --quiet playwright==1.48.0
+          playwright install --with-deps chromium
+
       - name: Run scraper
         id: scrape
+        continue-on-error: true
         run: |
-          echo "::group::Scraper output"
-          python3 scripts/scrape_google_reviews.py
+          echo "::group::Scraper stderr"
+          python3 scripts/scrape_google_reviews.py > /tmp/reviews.json 2> /tmp/scraper.log
           echo "::endgroup::"
 
-      - name: Show extracted data
+      - name: Show logs
         if: always()
         run: |
-          echo "─── Fichier généré ───"
-          ls -la data/ 2>&1 || echo "Pas de dossier data/"
+          echo "─── Scraper stderr ───"
+          cat /tmp/scraper.log 2>&1 | tail -100 || true
           echo ""
-          echo "─── Contenu reviews-google-raw.json ───"
-          cat data/reviews-google-raw.json 2>&1 | head -100 || echo "(fichier absent)"
+          echo "─── Nb bytes reviews.json ───"
+          wc -c /tmp/reviews.json 2>&1 || true
+          echo ""
+          echo "─── Contenu reviews.json (500 chars) ───"
+          head -c 500 /tmp/reviews.json 2>&1 || true
+          echo ""
+
+      - name: Upload debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-google
+          path: |
+            /tmp/reviews.json
+            /tmp/scraper.log
+            /tmp/debug-google.png
+            /tmp/debug-google.html
+          if-no-files-found: warn
+          retention-days: 3

@@ -1,221 +1,301 @@
 #!/usr/bin/env python3
 """
-Scraper Google Reviews pour Vert'Tige 972.
+Scraper Google Reviews (Playwright) — Vert'Tige 972.
 
-Cible l'endpoint interne Google Maps `/maps/rpc/listentitiesreviews`
-qui retourne les avis d'un lieu par son Feature ID.
+Approche : lance Chromium headless, ouvre la fiche Google Maps du lieu,
+clique sur l'onglet Avis, trie par date récente, scroll pour charger
+tous les avis, extrait du DOM.
 
-Feature ID Vert'Tige : 0x8c6add01ef4e4deb:0xe4b5e93c13c428b5
-- High : 10118824195470638059
-- Low  : 16485322727302760309 (= ludocid)
-
-Usage :
-    python3 scrape_google_reviews.py
-
-Sortie :
-    - stdout : résumé + JSON des avis extraits
-    - fichier data/reviews-google.json (si scrape réussi)
+CID Vert'Tige : 16485322727302760309
+URL directe : https://maps.google.com/?cid=<CID>&hl=fr&gl=fr
 """
 
 import json
 import re
 import sys
-import urllib.request
-import urllib.error
+import time
 from pathlib import Path
 
-# ─── Configuration ────────────────────────────────────────────────
-FEATURE_HIGH = "10118824195470638059"   # 0x8c6add01ef4e4deb
-FEATURE_LOW  = "16485322727302760309"   # 0xe4b5e93c13c428b5
-MAX_REVIEWS  = 50                        # on demande 50 avis à Google
-LANG         = "fr"
-COUNTRY      = "fr"
+from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
 
-# URL de l'endpoint (RPC interne Google Maps)
-# Params :
-#   !1m2!1yHIGH!2yLOW   → Feature ID du lieu
-#   !2m2!1i0!2i50        → offset 0, limit 50
-#   !3e1                 → sort : plus récent d'abord
-#   !4m5!3b1!4b1!5b1!6b1!7b1 → include: rating, text, author, date, ...
-#   !5m2!1sxxx!7e81      → session identifier (aléatoire OK)
-URL_TEMPLATE = (
-    "https://www.google.com/maps/rpc/listentitiesreviews"
-    "?authuser=0&hl={lang}&gl={gl}"
-    "&pb=!1m2!1y{high}!2y{low}"
-    "!2m2!1i0!2i{limit}!3e1"
-    "!4m5!3b1!4b1!5b1!6b1!7b1"
-    "!5m2!1sscraper!7e81"
+CID = "16485322727302760309"
+URL = f"https://maps.google.com/?cid={CID}&hl=fr&gl=fr"
+
+UA = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 )
 
-USER_AGENT = (
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-    "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/131.0.0.0 Safari/537.36"
-)
+MAX_SCROLLS = 30      # combien de fois on scroll pour charger de nouveaux avis
+SCROLL_PAUSE = 1.2    # secondes entre chaque scroll
 
 
-def fetch_google_reviews():
-    """Récupère la réponse brute de l'endpoint Google Maps."""
-    url = URL_TEMPLATE.format(
-        high=FEATURE_HIGH, low=FEATURE_LOW,
-        limit=MAX_REVIEWS, lang=LANG, gl=COUNTRY,
-    )
-    print(f"[*] Fetching: {url[:120]}...", file=sys.stderr)
+def log(msg):
+    print(f"[scraper] {msg}", file=sys.stderr, flush=True)
 
-    req = urllib.request.Request(url, headers={
-        "User-Agent": USER_AGENT,
-        "Accept": "*/*",
-        "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
-        "Referer": "https://www.google.com/maps/",
-    })
 
+def try_accept_cookies(page):
+    """Google affiche une popup de consentement cookies au premier chargement."""
+    selectors = [
+        'button:has-text("Tout accepter")',
+        'button:has-text("Accept all")',
+        'button[aria-label*="Accepter tout"]',
+        'button[aria-label*="Accept all"]',
+        'form[action*="consent"] button:nth-child(2)',
+    ]
+    for sel in selectors:
+        try:
+            btn = page.locator(sel).first
+            if btn.is_visible(timeout=2000):
+                btn.click()
+                log(f"Cookies acceptés via '{sel}'")
+                page.wait_for_timeout(1500)
+                return True
+        except PlaywrightTimeout:
+            continue
+        except Exception:
+            continue
+    log("Aucune popup cookies détectée (ou déjà passée)")
+    return False
+
+
+def click_reviews_tab(page):
+    """Clique sur l'onglet Avis / bouton 'Voir tous les avis'."""
+    selectors = [
+        'button[aria-label*="Avis pour"]',
+        'button[aria-label*="Reviews for"]',
+        'button[jsaction*="reviewChart"]',
+        'button:has-text("avis")',
+        'button:has-text("reviews")',
+        'a:has-text("Voir tous les avis")',
+    ]
+    for sel in selectors:
+        try:
+            btn = page.locator(sel).first
+            if btn.is_visible(timeout=3000):
+                btn.click()
+                log(f"Onglet avis ouvert via '{sel}'")
+                page.wait_for_timeout(2000)
+                return True
+        except Exception:
+            continue
+    log("[!] Onglet avis non trouvé — peut-être déjà sur la page reviews")
+    return False
+
+
+def sort_by_newest(page):
+    """Tente de trier les avis par 'Les plus récents'."""
     try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            raw = resp.read().decode("utf-8", errors="replace")
-            print(f"[*] HTTP {resp.status} — {len(raw)} bytes", file=sys.stderr)
-            return raw
-    except urllib.error.HTTPError as e:
-        print(f"[!] HTTP error {e.code}: {e.reason}", file=sys.stderr)
-        body = e.read().decode("utf-8", errors="replace")[:500]
-        print(f"[!] Body: {body}", file=sys.stderr)
-        return None
+        # Bouton de tri (souvent 'Les plus pertinents' par défaut)
+        sort_btn = page.locator('button[aria-label*="Trier"], button:has-text("Trier"), button:has-text("Sort")').first
+        sort_btn.click(timeout=5000)
+        page.wait_for_timeout(800)
+
+        # Option "Les plus récents"
+        newest = page.locator('div[role="menuitemradio"]:has-text("récents"), div[role="menuitem"]:has-text("récents"), div:has-text("Les plus récents")').first
+        newest.click(timeout=3000)
+        log("Tri par plus récents appliqué")
+        page.wait_for_timeout(2000)
+        return True
     except Exception as e:
-        print(f"[!] Fetch error: {e}", file=sys.stderr)
-        return None
+        log(f"[!] Tri non appliqué: {e}")
+        return False
 
 
-def parse_google_response(raw):
-    """
-    La réponse Google commence par `)]}'` puis contient un tableau JSON imbriqué.
-    Les avis sont dans data[2] (liste de reviews).
-    Chaque review est un array : [id, [author_info], rating, text, ...]
-    """
-    if not raw:
-        return []
-
-    # Retire le préfixe anti-XSSI de Google
-    raw = raw.lstrip(")]}'\n\r ")
-
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError as e:
-        print(f"[!] JSON decode error: {e}", file=sys.stderr)
-        print(f"[!] First 300 chars: {raw[:300]}", file=sys.stderr)
-        return []
-
-    # Structure typique : data = [meta, ?, [reviews_list], ...]
-    # On explore pour trouver la liste des reviews (heuristique)
-    reviews = []
-
-    def walk(obj, depth=0):
-        """Explore récursivement pour trouver les structures qui ressemblent à des reviews."""
-        if depth > 8:
-            return
-        if isinstance(obj, list):
-            # Heuristique : une review a typiquement [id_str, [author...], rating_int, text_str, ...]
-            if (len(obj) >= 4
-                and isinstance(obj[0], str) and len(obj[0]) > 10
-                and isinstance(obj[1], list)):
-                # Tentative d'extraction
-                r = extract_review(obj)
-                if r:
-                    reviews.append(r)
-                    return
-            for item in obj:
-                walk(item, depth + 1)
-
-    walk(data)
-    return reviews
+def find_scrollable_feed(page):
+    """Trouve le conteneur scrollable des avis."""
+    candidates = [
+        'div[role="feed"]',
+        'div.m6QErb.DxyBCb.kA9KIf',
+        'div.review-dialog-list',
+    ]
+    for sel in candidates:
+        try:
+            el = page.locator(sel).first
+            if el.count() > 0:
+                return el
+        except Exception:
+            continue
+    return None
 
 
-def extract_review(review_array):
-    """Extrait les champs d'un avis à partir de sa structure brute."""
-    try:
-        review_id = review_array[0] if isinstance(review_array[0], str) else None
+def scroll_reviews(page, max_scrolls=MAX_SCROLLS):
+    """Scroll le conteneur d'avis pour déclencher le lazy load."""
+    scrollable = find_scrollable_feed(page)
+    if not scrollable:
+        log("[!] Conteneur scrollable non trouvé — fallback scroll page")
+        for i in range(max_scrolls):
+            page.mouse.wheel(0, 3000)
+            page.wait_for_timeout(int(SCROLL_PAUSE * 1000))
+        return
 
-        # Author info : souvent review[1][4] = nom, review[1][0][0] = url photo
-        author_name = None
-        if isinstance(review_array[1], list):
-            author = review_array[1]
-            # Cherche un nom lisible dans l'array author
-            for x in author:
-                if isinstance(x, str) and 2 < len(x) < 80 and not x.startswith("http"):
-                    author_name = x
-                    break
-                if isinstance(x, list):
-                    for y in x:
-                        if isinstance(y, str) and 2 < len(y) < 80 and not y.startswith("http"):
-                            author_name = y
-                            break
-                    if author_name:
-                        break
+    prev_count = 0
+    stable = 0
+    for i in range(max_scrolls):
+        try:
+            scrollable.evaluate('el => el.scrollBy(0, 3000)')
+        except Exception:
+            page.mouse.wheel(0, 3000)
+        page.wait_for_timeout(int(SCROLL_PAUSE * 1000))
 
-        # Rating : chercher un int entre 1 et 5
-        rating = None
-        text = None
-        date_relative = None
-        for item in review_array[2:]:
-            if isinstance(item, int) and 1 <= item <= 5 and rating is None:
-                rating = item
-            elif isinstance(item, str) and len(item) > 20 and text is None:
-                text = item
-            elif isinstance(item, list):
-                for sub in item:
-                    if isinstance(sub, str) and ("il y a" in sub.lower() or "ago" in sub.lower()):
-                        date_relative = sub
-                        break
+        try:
+            count = page.locator('[data-review-id]').count()
+        except Exception:
+            count = 0
+        log(f"Scroll {i+1}/{max_scrolls} — {count} cartes visibles")
 
-        if not author_name or rating is None:
-            return None
+        if count == prev_count:
+            stable += 1
+            if stable >= 3:
+                log("Plus de nouveaux avis chargés — arrêt du scroll")
+                break
+        else:
+            stable = 0
+        prev_count = count
 
-        return {
-            "id": review_id,
-            "author": author_name,
-            "rating": rating,
-            "text": text,
-            "date_relative": date_relative,
-        }
-    except Exception:
-        return None
+
+EXTRACT_JS = """
+() => {
+  const cards = document.querySelectorAll('[data-review-id]');
+  return Array.from(cards).map(c => {
+    const id = c.getAttribute('data-review-id');
+
+    // Auteur
+    let name = null;
+    const nameEls = c.querySelectorAll('div.d4r55, .WNxzHc a, button[jsaction*="reviewerLink"] div');
+    for (const el of nameEls) {
+      const t = (el.innerText || '').trim();
+      if (t && t.length < 80) { name = t; break; }
+    }
+
+    // Note (via aria-label des étoiles)
+    let rating = null;
+    const starEls = c.querySelectorAll('span[role="img"][aria-label*="étoile"], span[role="img"][aria-label*="star"], span[aria-label*="/5"]');
+    for (const el of starEls) {
+      const label = el.getAttribute('aria-label') || '';
+      const m = label.match(/(\\d[\\d,\\.]*)/);
+      if (m) { rating = parseFloat(m[1].replace(',', '.')); break; }
+    }
+
+    // Texte de l'avis
+    let text = null;
+    const textEls = c.querySelectorAll('span.wiI7pd, div[data-expandable-section] span, .MyEned span');
+    for (const el of textEls) {
+      const t = (el.innerText || '').trim();
+      if (t && t.length > 5) { text = t; break; }
+    }
+
+    // Date relative
+    let date = null;
+    const dateEls = c.querySelectorAll('span.rsqaWe, span.xRkPPb, span.DZSIDd');
+    for (const el of dateEls) {
+      const t = (el.innerText || '').trim();
+      if (t) { date = t; break; }
+    }
+
+    return { id, name, rating, text, date };
+  }).filter(r => r.name && r.rating != null);
+}
+"""
+
+
+def scrape():
+    log(f"Cible: {URL}")
+    with sync_playwright() as p:
+        browser = p.chromium.launch(
+            headless=True,
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+            ],
+        )
+        context = browser.new_context(
+            user_agent=UA,
+            locale="fr-FR",
+            timezone_id="Europe/Paris",
+            viewport={"width": 1400, "height": 900},
+        )
+        # Cache la propriété webdriver (basique anti-detection)
+        context.add_init_script("""
+            Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+        """)
+
+        page = context.new_page()
+
+        try:
+            page.goto(URL, wait_until="domcontentloaded", timeout=45000)
+        except PlaywrightTimeout:
+            log("[!] Timeout navigation initiale")
+
+        page.wait_for_timeout(2000)
+        try_accept_cookies(page)
+
+        # Attendre le chargement de la fiche
+        try:
+            page.wait_for_selector('h1', timeout=15000)
+            title = page.locator('h1').first.inner_text()
+            log(f"Fiche chargée: {title}")
+        except Exception:
+            log("[!] h1 pas trouvé")
+
+        # Dump URL courante pour debug
+        log(f"URL actuelle: {page.url}")
+
+        click_reviews_tab(page)
+        sort_by_newest(page)
+
+        # Attendre au moins une review
+        try:
+            page.wait_for_selector('[data-review-id]', timeout=15000)
+        except PlaywrightTimeout:
+            log("[!] Aucune review-id détectée dans le DOM après clic")
+
+        scroll_reviews(page)
+
+        reviews = page.evaluate(EXTRACT_JS)
+        log(f"Reviews extraites: {len(reviews)}")
+
+        # Screenshot debug si peu/pas d'avis
+        if len(reviews) < 3:
+            page.screenshot(path="/tmp/debug-google.png", full_page=True)
+            log("Screenshot debug écrit /tmp/debug-google.png")
+            # Dump un extrait du HTML aussi
+            html = page.content()[:5000]
+            Path("/tmp/debug-google.html").write_text(html, encoding="utf-8")
+
+        browser.close()
+        return reviews
 
 
 def main():
     print("=" * 60, file=sys.stderr)
-    print("Vert'Tige 972 — Google Reviews Scraper — Phase 1 test", file=sys.stderr)
+    print("Vert'Tige — Google Reviews Playwright Scraper", file=sys.stderr)
     print("=" * 60, file=sys.stderr)
 
-    raw = fetch_google_reviews()
-    if raw is None:
-        print("\n[FAIL] Requête bloquée ou erreur réseau", file=sys.stderr)
+    try:
+        reviews = scrape()
+    except Exception as e:
+        log(f"[FATAL] {type(e).__name__}: {e}")
         sys.exit(1)
 
-    reviews = parse_google_response(raw)
-    print(f"\n[*] Avis extraits : {len(reviews)}", file=sys.stderr)
-
     if not reviews:
-        print("\n[FAIL] Aucun avis parsé — Google a probablement retourné", file=sys.stderr)
-        print("       une page CAPTCHA ou une structure inattendue.", file=sys.stderr)
-        # Dump un extrait de la réponse pour debug
-        print("\n[DEBUG] Extrait raw (500 premiers chars) :", file=sys.stderr)
-        print(raw[:500] if raw else "(vide)", file=sys.stderr)
+        log("[FAIL] Aucun avis extrait")
         sys.exit(2)
 
-    # Affiche les avis (stdout — sera capté par le workflow)
-    print(json.dumps(reviews, ensure_ascii=False, indent=2))
-
-    # Persiste dans data/
+    # Écriture
     out_dir = Path(__file__).resolve().parent.parent / "data"
     out_dir.mkdir(exist_ok=True)
     out_file = out_dir / "reviews-google-raw.json"
-    with out_file.open("w", encoding="utf-8") as f:
-        json.dump(reviews, f, ensure_ascii=False, indent=2)
-    print(f"\n[OK] Écrit : {out_file}", file=sys.stderr)
+    out_file.write_text(json.dumps(reviews, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    # Résumé lisible
-    print(f"\n[SUCCESS] {len(reviews)} avis récupérés", file=sys.stderr)
-    for r in reviews[:5]:
-        print(f"  - {r['author']} ({r['rating']}/5) : "
-              f"{(r['text'] or '')[:60]}...", file=sys.stderr)
+    log(f"[OK] {len(reviews)} avis écrits dans {out_file}")
+    for r in reviews[:10]:
+        text_preview = (r.get('text') or '')[:60].replace('\n', ' ')
+        log(f"  · {r['name']} ({r['rating']}★) {r.get('date') or '?'}: {text_preview}...")
+
+    # Aussi sur stdout
+    print(json.dumps(reviews, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
