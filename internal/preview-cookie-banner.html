@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Test bandeau cookies Vert'Tige</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@700&family=Barlow:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root { --lime:#A8D96C; --orange:#F37A1F; --creme:#ede8df; --noir:#0d1210; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height: 100%; }
+  body {
+    background:
+      radial-gradient(ellipse at top, #1e2b21 0%, #0b120e 60%),
+      #0b120e;
+    color: var(--creme);
+    font-family: 'Barlow', sans-serif;
+    padding: 40px 20px 260px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .demo { max-width: 720px; margin: 0 auto; }
+  .demo h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: .04em;
+    color: var(--lime);
+    margin-bottom: 12px;
+  }
+  .demo p { color: rgba(237,232,223,.65); line-height: 1.6; font-size: .95rem; max-width: 520px; }
+  .fake-hero {
+    margin-top: 40px;
+    padding: 40px 24px;
+    border: 1px dashed rgba(168,217,108,.15);
+    border-radius: 12px;
+    color: rgba(237,232,223,.4);
+    font-size: .8rem;
+    text-align: center;
+  }
+/* ─── Bottom sheet flottante premium — glass léger ─── */
+  .cc-banner {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 22px calc(18px + env(safe-area-inset-bottom, 0px) * 0);
+    z-index: 999999;
+    font-family: 'Barlow', sans-serif;
+    color: var(--creme, #ede8df);
+
+    /* Glass léger + fond sombre teinté vert profond */
+    background:
+      linear-gradient(180deg,
+        rgba(20, 30, 24, 0.82) 0%,
+        rgba(13, 20, 16, 0.86) 100%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    backdrop-filter: blur(24px) saturate(140%);
+
+    /* Bordure fine olive/vert profond, une seule */
+    border: 1px solid rgba(168, 217, 108, 0.14);
+    border-radius: 20px;
+
+    /* Ombre douce diffuse */
+    box-shadow:
+      0 20px 50px -20px rgba(0, 0, 0, 0.55),
+      0 8px 24px -12px rgba(0, 0, 0, 0.4);
+
+    /* Animation entrée */
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity .28s cubic-bezier(0.22, 0.61, 0.36, 1),
+                transform .28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    pointer-events: none;
+    will-change: opacity, transform;
+  }
+  .cc-banner.cc-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .cc-head {
+    margin-bottom: 10px;
+  }
+  .cc-title {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: .08em;
+    color: var(--lime, #A8D96C);
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+  .cc-text {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: rgba(237, 232, 223, 0.78);
+    margin-bottom: 18px;
+    font-weight: 400;
+  }
+  .cc-text strong {
+    color: rgba(237, 232, 223, 0.95);
+    font-weight: 600;
+  }
+  .cc-text a {
+    color: var(--lime, #A8D96C);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(168, 217, 108, 0.3);
+  }
+  .cc-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .cc-btn {
+    flex: 1 1 0;
+    min-height: 46px;
+    padding: 12px 18px;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    transition: background .2s ease, border-color .2s ease, color .2s ease, transform .12s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cc-btn:active { transform: scale(0.98); }
+  .cc-refuse {
+    background: rgba(255, 255, 255, 0.045);
+    border-color: rgba(237, 232, 223, 0.16);
+    color: rgba(237, 232, 223, 0.85);
+  }
+  .cc-refuse:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(237, 232, 223, 0.28);
+    color: #fff;
+  }
+  .cc-accept {
+    background: var(--lime, #A8D96C);
+    border-color: var(--lime, #A8D96C);
+    color: #0d1210;
+    font-weight: 800;
+  }
+  .cc-accept:hover {
+    background: #b8e57a;
+    border-color: #b8e57a;
+  }
+  .cc-accept:focus-visible,
+  .cc-refuse:focus-visible {
+    outline: 2px solid rgba(168, 217, 108, 0.5);
+    outline-offset: 2px;
+  }
+
+  /* ─── Mobile compact ─── */
+  @media (max-width: 480px) {
+    .cc-banner {
+      left: 12px;
+      right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      padding: 18px 18px;
+      border-radius: 18px;
+    }
+    .cc-title { font-size: 1.05rem; letter-spacing: .07em; }
+    .cc-text { font-size: 0.82rem; line-height: 1.5; margin-bottom: 16px; }
+    .cc-btn { font-size: 0.68rem; padding: 12px 14px; letter-spacing: .12em; min-height: 44px; }
+  }
+
+  /* ─── Respect reduced-motion ─── */
+  @media (prefers-reduced-motion: reduce) {
+    .cc-banner {
+      transition: opacity .15s linear;
+      transform: none;
+    }
+    .cc-banner.cc-visible { transform: none; }
+    .cc-btn { transition: none; }
+    .cc-btn:active { transform: none; }
+  }
+  /* Force visible pour aperçu (n'existe pas en prod, où c'est piloté par le JS de consent) */
+  .cc-banner { opacity:1 !important; transform: translateY(0) !important; pointer-events:auto !important; }
+</style>
+</head>
+<body>
+  <div class="demo">
+    <h1>Aperçu bandeau cookies</h1>
+    <p>Composant isolé identique à celui qui apparaîtra sur elagageabattagemartinique.com à la 1re visite (ou via "Gérer les cookies" en footer). Aucun texte ni handler modifié — seul le style change.</p>
+    <div class="fake-hero">Contenu du site (placeholder) — le bandeau doit rester compact et laisser respirer la page.</div>
+  </div>
+
+<div class="cc-banner" id="ccBanner" role="dialog" aria-live="polite" aria-label="Consentement cookies">
+  <div class="cc-head">
+    <span class="cc-title">On élague aussi le site</span>
+  </div>
+  <p class="cc-text">
+    Des cookies d'analyse nous aident à comprendre vos clics et votre parcours ici pour couper ce qui gêne et améliorer votre expérience sur notre site.<br>
+    <strong>Rien ne s'active sans votre accord.</strong>
+  </p>
+  <div class="cc-actions">
+    <button type="button" class="cc-btn cc-refuse" onclick="window.CookieConsent.refuse()">Refuser</button>
+    <button type="button" class="cc-btn cc-accept" onclick="window.CookieConsent.accept()">Accepter</button>
+  </div></div>
+</body>
+</html>
